@@ -1,0 +1,22 @@
+title User visits SPA version of notes app
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa
+server-->browser: HTML of page
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+server-->browser: main.css
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js
+server-->browser: main.js
+
+note over browser:
+browser executes javascript that sets
+event handlers and requests JSON data
+form submit handler prevents default action
+end note
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+server-->browser: notes JSON: [{ content: "HTML is easy", date: "2019-05-23" }, ...]
+
+note over browser:
+browser executes event
+handler that renders notes
+end note

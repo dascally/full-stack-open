@@ -1,0 +1,14 @@
+title User creates a new note (SPA version)
+
+note over browser:
+browser makes new note with content from form and current date,
+clears form field, and redraws notes list with new note
+end note
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa; body contains new note as JSON
+
+note over server:
+server creates new note object
+end note
+
+server-->browser: returns 201 status code; body contains JSON: {"message":"note created"}
