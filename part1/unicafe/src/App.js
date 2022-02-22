@@ -15,7 +15,10 @@ const Statistics = ({ good, neutral, bad }) => {
         <StatisticLine label='Bad' value={bad} />
         <StatisticLine label='All' value={sum} />
         <StatisticLine label='Average' value={(good - bad) / sum} />
-        <StatisticLine label='Positive' value={good / sum} />
+        <StatisticLine
+          label='Positive'
+          value={`${((good / sum) * 100).toFixed(1)}%`}
+        />
       </tbody>
     </table>
   );
