@@ -44,10 +44,20 @@ function App() {
 
   return (
     <>
+      <h1>Anecdote of the day</h1>
       <p>{anecdotes[selected].text}</p>
       <p>Has {anecdotes[selected].votes} votes.</p>
       <button onClick={handleVoteClick}>Vote</button>
       <button onClick={handleNextClick}>Next aphorism</button>
+
+      <h1>Anecdote with the most votes</h1>
+      {
+        anecdotes.reduce((mostVotedAnecdote, anecdote) =>
+          anecdote.votes > mostVotedAnecdote.votes
+            ? anecdote
+            : mostVotedAnecdote
+        ).text
+      }
     </>
   );
 }
