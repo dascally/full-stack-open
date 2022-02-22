@@ -8,21 +8,24 @@ const Statistics = ({ good, neutral, bad }) => {
   return good === 0 && neutral === 0 && bad === 0 ? (
     <p>No feedback given.</p>
   ) : (
-    <>
-      <StatisticLine label='Good' value={good} />
-      <StatisticLine label='Neutral' value={neutral} />
-      <StatisticLine label='Bad' value={bad} />
-      <StatisticLine label='All' value={sum} />
-      <StatisticLine label='Average' value={(good - bad) / sum} />
-      <StatisticLine label='Positive' value={good / sum} />
-    </>
+    <table>
+      <tbody>
+        <StatisticLine label='Good' value={good} />
+        <StatisticLine label='Neutral' value={neutral} />
+        <StatisticLine label='Bad' value={bad} />
+        <StatisticLine label='All' value={sum} />
+        <StatisticLine label='Average' value={(good - bad) / sum} />
+        <StatisticLine label='Positive' value={good / sum} />
+      </tbody>
+    </table>
   );
 };
 
 const StatisticLine = ({ label, value }) => (
-  <p>
-    {label}: {value}
-  </p>
+  <tr>
+    <td>{label}</td>
+    <td>{value}</td>
+  </tr>
 );
 
 const App = () => {
