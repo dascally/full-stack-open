@@ -1,6 +1,42 @@
 import { useState } from 'react';
 
-const Numbers = ({ entries, filter }) => {
+const Filter = ({ value, onChange }) => {
+  return (
+    <p>
+      Filter shown with{' '}
+      <input type='search' value={value} onChange={onChange} />
+    </p>
+  );
+};
+
+const NewEntryForm = ({
+  onSubmit,
+  newName,
+  newNumber,
+  onNameChange,
+  onNumberChange,
+}) => {
+  return (
+    <form onSubmit={onSubmit}>
+      <div>
+        <label>
+          name: <input type='text' value={newName} onChange={onNameChange} />
+        </label>
+      </div>
+      <div>
+        <label>
+          number:{' '}
+          <input type='tel' value={newNumber} onChange={onNumberChange} />
+        </label>
+      </div>
+      <div>
+        <button type='submit'>add</button>
+      </div>
+    </form>
+  );
+};
+
+const Listings = ({ entries, filter }) => {
   return (
     <ul>
       {entries
@@ -27,11 +63,9 @@ const App = () => {
   const handleNameInput = (evt) => {
     setNewName(evt.target.value);
   };
-
   const handleNumberInput = (evt) => {
     setNewNumber(evt.target.value);
   };
-
   const handleFilterInput = (evt) => {
     setFilter(evt.target.value);
   };
@@ -54,29 +88,16 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <p>
-        Filter shown with{' '}
-        <input type='search' value={filter} onChange={handleFilterInput} />
-      </p>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>
-            name:{' '}
-            <input type='text' value={newName} onChange={handleNameInput} />
-          </label>
-        </div>
-        <div>
-          <label>
-            number:{' '}
-            <input type='tel' value={newNumber} onChange={handleNumberInput} />
-          </label>
-        </div>
-        <div>
-          <button type='submit'>add</button>
-        </div>
-      </form>
+      <Filter value={filter} onChange={handleFilterInput} />
+      <NewEntryForm
+        onSubmit={handleSubmit}
+        newName={newName}
+        newNumber={newNumber}
+        onNameChange={handleNameInput}
+        onNumberChange={handleNumberInput}
+      />
       <h2>Numbers</h2>
-      <Numbers entries={persons} filter={filter} />
+      <Listings entries={persons} filter={filter} />
     </div>
   );
 };
