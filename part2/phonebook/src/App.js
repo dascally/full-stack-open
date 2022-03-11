@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import * as personService from './services/persons.js';
 
 const Filter = ({ value, onChange }) => {
@@ -38,7 +37,7 @@ const NewEntryForm = ({
   );
 };
 
-const Listings = ({ entries, filter }) => {
+const Listings = ({ entries, filter, setPersons }) => {
   return (
     <ul>
       {entries
@@ -46,8 +45,20 @@ const Listings = ({ entries, filter }) => {
           entry.name.toLowerCase().includes(filter.toLowerCase())
         )
         .map((entry) => (
-          <li key={entry.name}>
-            {entry.name}: {entry.number}
+          <li key={entry.id}>
+            {entry.name}: {entry.number}{' '}
+            <button
+              type='button'
+              onClick={() => {
+                personService.deletePerson(entry.id).then((data) => {
+                  setPersons(
+                    entries.filter((person) => person.id !== entry.id)
+                  );
+                });
+              }}
+            >
+              Delete
+            </button>
           </li>
         ))}
     </ul>
@@ -106,7 +117,7 @@ const App = () => {
         onNumberChange={handleNumberInput}
       />
       <h2>Numbers</h2>
-      <Listings entries={persons} filter={filter} />
+      <Listings entries={persons} filter={filter} setPersons={setPersons} />
     </div>
   );
 };
