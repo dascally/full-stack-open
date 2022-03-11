@@ -50,7 +50,7 @@ const Listings = ({ entries, filter, setPersons }) => {
             <button
               type='button'
               onClick={() => {
-                personService.deletePerson(entry.id).then((data) => {
+                personService.deletePerson(entry.id).then(() => {
                   setPersons(
                     entries.filter((person) => person.id !== entry.id)
                   );
@@ -90,13 +90,35 @@ const App = () => {
   const handleSubmit = (evt) => {
     evt.preventDefault();
 
-    if (persons.find((person) => person.name === newName)) {
+    const newPerson = { name: newName, number: newNumber };
+    const existingPerson = persons.find((person) => person.name === newName);
+
+    if (existingPerson) {
       // evt.target.elements[0].setCustomValidity(
       //   `${newName} is already in the phonebook.`
       // );
-      alert(`${newName} is already in the phonebook.`);
+
+      const confirmUpdate = window.confirm(
+        `${newName} is already in the phonebook; replace the old number with a new one?`
+      );
+
+      if (confirmUpdate) {
+        personService
+          .update(existingPerson.id, {
+            ...existingPerson,
+            ...newPerson,
+          })
+          .then((returnedPerson) => {
+            setPersons(
+              persons.map((person) =>
+                person.id === returnedPerson.id ? returnedPerson : person
+              )
+            );
+            setNewName('');
+            setNewNumber('');
+          });
+      }
     } else {
-      const newPerson = { name: newName, number: newNumber };
       personService.create(newPerson).then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson));
         setNewName('');
