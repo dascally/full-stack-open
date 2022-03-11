@@ -76,18 +76,21 @@ const App = () => {
   };
 
   const handleSubmit = (evt) => {
+    evt.preventDefault();
+
     if (persons.find((person) => person.name === newName)) {
       // evt.target.elements[0].setCustomValidity(
       //   `${newName} is already in the phonebook.`
       // );
       alert(`${newName} is already in the phonebook.`);
     } else {
-      setPersons(persons.concat({ name: newName, number: newNumber }));
-      setNewName('');
-      setNewNumber('');
+      const newPerson = { name: newName, number: newNumber };
+      axios.post('http://localhost:3001/persons', newPerson).then((res) => {
+        setPersons(persons.concat(newPerson));
+        setNewName('');
+        setNewNumber('');
+      });
     }
-
-    evt.preventDefault();
   };
 
   return (
