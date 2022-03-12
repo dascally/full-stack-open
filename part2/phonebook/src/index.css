@@ -1,0 +1,9 @@
+.infoMessage {
+  font-size: 1.25em;
+  color: green;
+  background: lightgray;
+  border-style: solid;
+  border-radius: 0.25em;
+  padding: 0.5em;
+  margin-bottom: 1em;
+}

@@ -1,6 +1,6 @@
 import * as personService from '../services/persons.js';
 
-const Listings = ({ entries, filter, setPersons }) => {
+const Listings = ({ entries, filter, setPersons, setInfoMessage }) => {
   return (
     <ul>
       {entries
@@ -16,6 +16,9 @@ const Listings = ({ entries, filter, setPersons }) => {
                 personService.deletePerson(entry.id).then(() => {
                   setPersons(
                     entries.filter((person) => person.id !== entry.id)
+                  );
+                  setInfoMessage(
+                    `${entry.name} was removed from the phonebook.`
                   );
                 });
               }}

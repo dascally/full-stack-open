@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Filter from './components/Filter.js';
 import Listings from './components/Listings.js';
 import NewEntryForm from './components/NewEntryForm.js';
+import Notification from './components/Notification.js';
 import * as personService from './services/persons.js';
 
 const App = () => {
@@ -9,6 +10,17 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
+  const [infoMessage, setInfoMessage] = useState(null);
+  const [infoMessageTimer, setInfoMessageTimer] = useState(null);
+  const setTempInfoMessage = (message) => {
+    setInfoMessage(message);
+    clearTimeout(infoMessageTimer);
+    setInfoMessageTimer(
+      setTimeout(() => {
+        setInfoMessage(null);
+      }, 5000)
+    );
+  };
 
   useEffect(() => {
     personService
@@ -45,6 +57,7 @@ const App = () => {
             );
             setNewName('');
             setNewNumber('');
+            setTempInfoMessage(`${returnedPerson.name}'s number was updated.`);
           });
       }
     } else {
@@ -52,12 +65,17 @@ const App = () => {
         setPersons(persons.concat(returnedPerson));
         setNewName('');
         setNewNumber('');
+        setTempInfoMessage(
+          `${returnedPerson.name}'s number was added to the phonebook.`
+        );
       });
     }
   };
 
   return (
     <div>
+      {infoMessage ? <Notification message={infoMessage} /> : null}
+
       <h2>Phonebook</h2>
       <Filter
         value={filter}
@@ -78,7 +96,12 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      <Listings entries={persons} filter={filter} setPersons={setPersons} />
+      <Listings
+        entries={persons}
+        filter={filter}
+        setPersons={setPersons}
+        setInfoMessage={setTempInfoMessage}
+      />
     </div>
   );
 };
