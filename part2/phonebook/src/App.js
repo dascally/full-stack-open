@@ -68,6 +68,9 @@ const App = () => {
               `${existingPerson.name} was already removed from the server.`,
               'error'
             );
+            setPersons(
+              persons.filter((person) => person.id !== existingPerson.id)
+            );
           });
       }
     } else {

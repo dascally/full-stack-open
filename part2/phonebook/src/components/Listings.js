@@ -28,6 +28,9 @@ const Listings = ({ entries, filter, setPersons, setInfoMessage }) => {
                       `${entry.name} was already removed from the server.`,
                       'error'
                     );
+                    setPersons(
+                      entries.filter((person) => person.id !== entry.id)
+                    );
                   });
               }}
             >
