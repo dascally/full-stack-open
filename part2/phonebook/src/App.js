@@ -11,14 +11,18 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
   const [infoMessage, setInfoMessage] = useState(null);
+  const [infoMessageType, setInfoMessageType] = useState('info');
   const [infoMessageTimer, setInfoMessageTimer] = useState(null);
-  const setTempInfoMessage = (message) => {
+
+  const setTempInfoMessage = (message, type = 'info') => {
     setInfoMessage(message);
+    setInfoMessageType(type);
+
     clearTimeout(infoMessageTimer);
     setInfoMessageTimer(
       setTimeout(() => {
         setInfoMessage(null);
-      }, 5000)
+      }, 3000)
     );
   };
 
@@ -58,6 +62,12 @@ const App = () => {
             setNewName('');
             setNewNumber('');
             setTempInfoMessage(`${returnedPerson.name}'s number was updated.`);
+          })
+          .catch(() => {
+            setTempInfoMessage(
+              `${existingPerson.name} was already removed from the server.`,
+              'error'
+            );
           });
       }
     } else {
@@ -74,7 +84,9 @@ const App = () => {
 
   return (
     <div>
-      {infoMessage ? <Notification message={infoMessage} /> : null}
+      {infoMessage ? (
+        <Notification message={infoMessage} messageType={infoMessageType} />
+      ) : null}
 
       <h2>Phonebook</h2>
       <Filter

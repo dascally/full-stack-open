@@ -13,14 +13,22 @@ const Listings = ({ entries, filter, setPersons, setInfoMessage }) => {
             <button
               type='button'
               onClick={() => {
-                personService.deletePerson(entry.id).then(() => {
-                  setPersons(
-                    entries.filter((person) => person.id !== entry.id)
-                  );
-                  setInfoMessage(
-                    `${entry.name} was removed from the phonebook.`
-                  );
-                });
+                personService
+                  .deletePerson(entry.id)
+                  .then(() => {
+                    setPersons(
+                      entries.filter((person) => person.id !== entry.id)
+                    );
+                    setInfoMessage(
+                      `${entry.name} was removed from the phonebook.`
+                    );
+                  })
+                  .catch(() => {
+                    setInfoMessage(
+                      `${entry.name} was already removed from the server.`,
+                      'error'
+                    );
+                  });
               }}
             >
               Delete

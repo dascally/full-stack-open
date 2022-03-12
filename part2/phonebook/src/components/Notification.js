@@ -1,5 +1,5 @@
-const Notification = ({ message }) => {
-  return <p className='infoMessage'>{message}</p>;
+const Notification = ({ message, messageType }) => {
+  return <p className={`${messageType}Message`}>{message}</p>;
 };
 
 export default Notification;
