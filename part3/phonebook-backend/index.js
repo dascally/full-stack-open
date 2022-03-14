@@ -1,4 +1,5 @@
 const express = require('express');
+const morgan = require('morgan');
 
 const PORT = 3001;
 
@@ -30,6 +31,8 @@ const app = express();
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}.`);
 });
+
+app.use(morgan('tiny'));
 
 app.get('/info', (req, res) => {
   res.send(
