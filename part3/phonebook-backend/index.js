@@ -1,6 +1,8 @@
 const express = require('express');
 const morgan = require('morgan');
 
+morgan.token('data', (req, res) => JSON.stringify(req.body));
+
 const PORT = 3001;
 
 let persons = [
@@ -59,6 +61,7 @@ app.get('/api/persons/:id', (req, res) => {
   }
 });
 
+app.post('/api/persons', morgan(':data'));
 app.post('/api/persons', (req, res) => {
   const generateId = () => {
     return Math.trunc(Math.random() * 1000000);
