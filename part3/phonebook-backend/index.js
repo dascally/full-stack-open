@@ -61,6 +61,20 @@ app.post('/api/persons', (req, res) => {
     return Math.trunc(Math.random() * 1000000);
   };
 
+  if (!req.body.name || !req.body.number) {
+    res.statusCode = 400;
+    res.json({ error: 'Name or number is missing.' });
+    return;
+  } else if (
+    persons.some(
+      (person) => person.name.toLowerCase() === req.body.name.toLowerCase()
+    )
+  ) {
+    res.statusCode = 400;
+    res.json({ error: 'The specified person is already in the phonebook.' });
+    return;
+  }
+
   const newPerson = {
     id: generateId(),
     name: req.body.name,
