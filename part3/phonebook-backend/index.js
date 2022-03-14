@@ -39,6 +39,8 @@ app.get('/info', (req, res) => {
   );
 });
 
+app.use('/api', express.json());
+
 app.get('/api/persons', (req, res) => {
   res.json(persons);
 });
@@ -52,6 +54,22 @@ app.get('/api/persons/:id', (req, res) => {
     res.statusCode = 404;
     res.end();
   }
+});
+
+app.post('/api/persons', (req, res) => {
+  const generateId = () => {
+    return Math.trunc(Math.random() * 1000000);
+  };
+
+  const newPerson = {
+    id: generateId(),
+    name: req.body.name,
+    number: req.body.number,
+  };
+
+  persons.push(newPerson);
+
+  res.json(newPerson);
 });
 
 app.delete('/api/persons/:id', (req, res) => {
