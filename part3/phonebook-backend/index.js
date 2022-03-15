@@ -106,3 +106,5 @@ app.delete('/api/persons/:id', (req, res) => {
     res.end();
   }
 });
+
+app.use(express.static('build'));
