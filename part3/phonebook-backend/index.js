@@ -4,7 +4,7 @@ const morgan = require('morgan');
 
 morgan.token('data', (req, res) => JSON.stringify(req.body));
 
-const PORT = 3001;
+const PORT = process.env.PORT ?? 3001;
 
 let persons = [
   {
