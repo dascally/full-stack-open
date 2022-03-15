@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const morgan = require('morgan');
 
 morgan.token('data', (req, res) => JSON.stringify(req.body));
@@ -44,6 +45,7 @@ app.get('/info', (req, res) => {
   );
 });
 
+app.use('/api', cors());
 app.use('/api', express.json());
 
 app.get('/api/persons', (req, res) => {
