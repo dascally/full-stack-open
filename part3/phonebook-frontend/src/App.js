@@ -65,9 +65,6 @@ const App = () => {
           })
           .catch((err) => {
             setTempInfoMessage(err.response.data.error, 'error');
-            // setPersons(
-            //   persons.filter((person) => person.id !== existingPerson.id)
-            // );
           });
       }
     } else {
