@@ -15,12 +15,16 @@ app.listen(PORT, () => {
 
 app.use(morgan('tiny'));
 
-app.get('/info', (req, res) => {
-  res.send(
-    `<p>Phonebook has info for ${persons.length} ${
-      persons.length === 1 ? 'person' : 'people'
-    }.</p>` + `<p>${new Date().toString()}</p>`
-  );
+app.get('/info', (req, res, next) => {
+  Person.find({})
+    .then((persons) => {
+      res.send(
+        `<p>Phonebook has info for ${persons.length} ${
+          persons.length === 1 ? 'person' : 'people'
+        }.</p>` + `<p>${new Date().toString()}</p>`
+      );
+    })
+    .catch(next);
 });
 
 app.use('/api', cors());
