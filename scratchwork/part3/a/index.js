@@ -52,10 +52,16 @@ app.get('/api/notes', (req, res) => {
   });
 });
 
-app.get('/api/notes/:id', (req, res) => {
-  Note.findById(req.params.id).then((note) => {
-    res.json(note);
-  });
+app.get('/api/notes/:id', (req, res, next) => {
+  Note.findById(req.params.id)
+    .then((note) => {
+      if (note) {
+        res.json(note);
+      } else {
+        res.status(404).end();
+      }
+    })
+    .catch(next);
 });
 
 app.post('/api/notes', (req, res) => {
@@ -76,14 +82,44 @@ app.post('/api/notes', (req, res) => {
   });
 });
 
-app.delete('/api/notes/:id', (req, res) => {
-  const id = Number(req.params.id);
-  notes = notes.filter((note) => note.id !== id);
+app.put('/api/notes/:id', (req, res, next) => {
+  const body = req.body;
 
-  res.status(204).end();
+  const note = {
+    content: body.content,
+    important: body.important,
+  };
+
+  Note.findByIdAndUpdate(req.params.id, note, { new: true })
+    .then((updatedNote) => {
+      res.json(updatedNote);
+    })
+    .catch(next);
+});
+
+app.delete('/api/notes/:id', (req, res, next) => {
+  Note.findByIdAndRemove(req.params.id)
+    .then((result) => {
+      if (result) {
+        res.status(204).end();
+      } else {
+        res.status(404).end();
+      }
+    })
+    .catch(next);
 });
 
 app.use(unknownEndpoint);
+
+app.use((err, req, res, next) => {
+  console.error(err.message);
+
+  if (err.name === 'CastError') {
+    return res.status(400).send({ error: 'Malformed ID' });
+  }
+
+  next(err);
+});
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
