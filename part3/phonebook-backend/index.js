@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const Person = require('./models/person.js');
 
 morgan.token('data', (req, res) => JSON.stringify(req.body));
 
@@ -49,18 +50,15 @@ app.use('/api', cors());
 app.use('/api', express.json());
 
 app.get('/api/persons', (req, res) => {
-  res.json(persons);
+  Person.find({}).then((persons) => {
+    res.json(persons);
+  });
 });
 
 app.get('/api/persons/:id', (req, res) => {
-  const person = persons.find((person) => person.id === +req.params.id);
-
-  if (person) {
+  Person.findById(req.params.id).then((person) => {
     res.json(person);
-  } else {
-    res.statusCode = 404;
-    res.end();
-  }
+  });
 });
 
 app.post('/api/persons', morgan(':data'));
