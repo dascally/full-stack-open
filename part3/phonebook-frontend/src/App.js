@@ -63,14 +63,11 @@ const App = () => {
             setNewNumber('');
             setTempInfoMessage(`${returnedPerson.name}'s number was updated.`);
           })
-          .catch(() => {
-            setTempInfoMessage(
-              `${existingPerson.name} was already removed from the server.`,
-              'error'
-            );
-            setPersons(
-              persons.filter((person) => person.id !== existingPerson.id)
-            );
+          .catch((err) => {
+            setTempInfoMessage(err.response.data.error, 'error');
+            // setPersons(
+            //   persons.filter((person) => person.id !== existingPerson.id)
+            // );
           });
       }
     } else {

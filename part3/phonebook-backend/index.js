@@ -48,21 +48,21 @@ app.get('/api/persons/:id', (req, res, next) => {
 
 app.post('/api/persons', morgan(':data'));
 app.post('/api/persons', (req, res, next) => {
-  if (!req.body.name || !req.body.number) {
-    res.statusCode = 400;
-    res.json({ error: 'Name or number is missing.' });
-    return;
-  }
-
-  const newPerson = new Person({
-    name: req.body.name,
-    number: req.body.number,
-  });
-
-  newPerson
-    .save()
+  Person.findOne({ name: req.body.name })
     .then((person) => {
-      res.json(person);
+      if (person) {
+        throw new Error(`${req.body.name} already exists in phonebook.`);
+      }
+
+      const newPerson = new Person({
+        name: req.body.name,
+        number: req.body.number,
+      });
+
+      return newPerson.save();
+    })
+    .then((newPerson) => {
+      res.json(newPerson);
     })
     .catch(next);
 });
@@ -73,6 +73,12 @@ app.put('/api/persons/:id', (req, res, next) => {
     runValidators: true,
   })
     .then((updatedPerson) => {
+      if (!updatedPerson) {
+        throw new Error(
+          `${req.body.name} was already removed from the server.`
+        );
+      }
+
       res.json(updatedPerson);
     })
     .catch(next);
@@ -100,7 +106,7 @@ app.use((err, req, res, next) => {
   if (err.name === 'CastError') {
     res.statusCode = 400;
     res.send({ error: 'Malformed ID.' });
-  } else if (err.name === 'ValidationError') {
+  } else {
     res.statusCode = 400;
     res.send({ error: err.message });
   }
