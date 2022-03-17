@@ -74,14 +74,19 @@ const App = () => {
           });
       }
     } else {
-      personService.create(newPerson).then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson));
-        setNewName('');
-        setNewNumber('');
-        setTempInfoMessage(
-          `${returnedPerson.name}'s number was added to the phonebook.`
-        );
-      });
+      personService
+        .create(newPerson)
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson));
+          setNewName('');
+          setNewNumber('');
+          setTempInfoMessage(
+            `${returnedPerson.name}'s number was added to the phonebook.`
+          );
+        })
+        .catch((err) => {
+          setTempInfoMessage(err.response.data.error, 'error');
+        });
     }
   };
 

@@ -5,3 +5,13 @@ Content-Type: application/json
     "name": "Charles Babbage",
     "number": "123-555-7890"
 }
+
+###
+
+POST http://localhost:3001/api/persons HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "Ab",
+    "number": "012-333-4567"
+}
