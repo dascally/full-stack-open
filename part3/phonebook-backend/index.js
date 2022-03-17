@@ -26,7 +26,7 @@ app.get('/info', (req, res) => {
 app.use('/api', cors());
 app.use('/api', express.json());
 
-app.get('/api/persons', (req, res) => {
+app.get('/api/persons', (req, res, next) => {
   Person.find({})
     .then((persons) => {
       res.json(persons);
@@ -34,7 +34,7 @@ app.get('/api/persons', (req, res) => {
     .catch(next);
 });
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
   Person.findById(req.params.id)
     .then((person) => {
       res.json(person);
@@ -59,6 +59,14 @@ app.post('/api/persons', (req, res, next) => {
     .save()
     .then((person) => {
       res.json(person);
+    })
+    .catch(next);
+});
+
+app.put('/api/persons/:id', (req, res, next) => {
+  Person.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    .then((updatedPerson) => {
+      res.json(updatedPerson);
     })
     .catch(next);
 });
