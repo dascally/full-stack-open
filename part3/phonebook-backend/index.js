@@ -80,16 +80,15 @@ app.post('/api/persons', (req, res) => {
 });
 
 app.delete('/api/persons/:id', (req, res) => {
-  const newPersons = persons.filter((person) => person.id !== +req.params.id);
-
-  if (newPersons.length === persons.length) {
-    res.statusCode = 404;
-    res.end();
-  } else {
-    persons = newPersons;
-    res.statusCode = 204;
-    res.end();
-  }
+  Person.findByIdAndRemove(req.params.id).then((person) => {
+    if (person) {
+      res.statusCode = 204;
+      res.end();
+    } else {
+      res.statusCode = 404;
+      res.end();
+    }
+  });
 });
 
 app.use(express.static('build'));
