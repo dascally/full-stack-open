@@ -3,7 +3,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const Person = require('./models/person.js');
 
-morgan.token('data', (req, res) => JSON.stringify(req.body));
+morgan.token('data', (req) => JSON.stringify(req.body));
 
 const PORT = process.env.PORT ?? 3001;
 
