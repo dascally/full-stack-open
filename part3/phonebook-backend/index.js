@@ -63,33 +63,20 @@ app.get('/api/persons/:id', (req, res) => {
 
 app.post('/api/persons', morgan(':data'));
 app.post('/api/persons', (req, res) => {
-  const generateId = () => {
-    return Math.trunc(Math.random() * 1000000);
-  };
-
   if (!req.body.name || !req.body.number) {
     res.statusCode = 400;
     res.json({ error: 'Name or number is missing.' });
     return;
-  } else if (
-    persons.some(
-      (person) => person.name.toLowerCase() === req.body.name.toLowerCase()
-    )
-  ) {
-    res.statusCode = 400;
-    res.json({ error: 'The specified person is already in the phonebook.' });
-    return;
   }
 
-  const newPerson = {
-    id: generateId(),
+  const newPerson = new Person({
     name: req.body.name,
     number: req.body.number,
-  };
+  });
 
-  persons.push(newPerson);
-
-  res.json(newPerson);
+  newPerson.save().then((person) => {
+    res.json(person);
+  });
 });
 
 app.delete('/api/persons/:id', (req, res) => {
