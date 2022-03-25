@@ -114,3 +114,23 @@ describe('mostBlogs', () => {
     });
   });
 });
+
+describe('mostLikes', () => {
+  test('of empty list is null', () => {
+    expect(listHelper.mostLikes([])).toBe(null);
+  });
+
+  test("of single blog is that blog's author/likes", () => {
+    expect(listHelper.mostLikes(blogs.slice(0, 1))).toEqual({
+      author: 'Michael Chan',
+      likes: 7,
+    });
+  });
+
+  test('of multiple blogs is author with most likes', () => {
+    expect(listHelper.mostLikes(blogs)).toEqual({
+      author: 'Edsger W. Dijkstra',
+      likes: 17,
+    });
+  });
+});

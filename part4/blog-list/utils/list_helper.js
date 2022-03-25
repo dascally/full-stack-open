@@ -37,4 +37,30 @@ const mostBlogs = (blogs) => {
   });
 };
 
-module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs };
+const mostLikes = (blogs) => {
+  if (blogs.length === 0) return null;
+
+  const authors = [];
+
+  blogs.forEach((blog) => {
+    const authorIdx = authors.findIndex(
+      (author) => blog.author === author.author
+    );
+
+    if (authorIdx === -1) {
+      authors.push({ author: blog.author, likes: blog.likes });
+    } else {
+      authors[authorIdx].likes += blog.likes;
+    }
+  });
+
+  return authors.reduce((mostLiked, author) => {
+    if (author.likes > mostLiked.likes) {
+      return author;
+    } else {
+      return mostLiked;
+    }
+  });
+};
+
+module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes };
