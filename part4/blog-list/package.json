@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon .",
-    "test": "jest"
+    "start": "node .",
+    "dev": "cross-env NODE_ENV=development nodemon .",
+    "test": "cross-env NODE_ENV=test jest"
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +17,8 @@
     "mongoose": "^6.2.7"
   },
   "devDependencies": {
-    "jest": "^27.5.1"
+    "cross-env": "^7.0.3",
+    "jest": "^27.5.1",
+    "supertest": "^6.2.2"
   }
 }
