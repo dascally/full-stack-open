@@ -76,6 +76,15 @@ test('new posts default to 0 likes if not specified', async () => {
   expect(blog.body.likes).toBe(0);
 });
 
+test('new posts missing title and url are rejected with 400 status code', async () => {
+  const newBlogPost = {
+    author: 'Author',
+    likes: 1,
+  };
+
+  await api.post('/api/blogs').send(newBlogPost).expect(400);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
