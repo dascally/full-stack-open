@@ -62,6 +62,20 @@ test('creates a new post after receiving POST request', async () => {
   expect(blogs.length).toBe(initialBlogs.length + 1);
 });
 
+test('new posts default to 0 likes if not specified', async () => {
+  const newBlogPost = {
+    title: 'A new post with likes unspecified',
+    author: 'Another Author',
+    url: 'http://www.example.org/',
+  };
+
+  const res = await api.post('/api/blogs').send(newBlogPost);
+
+  const blog = await api.get(`/api/blogs/${res.body.id}`);
+
+  expect(blog.body.likes).toBe(0);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
