@@ -95,6 +95,21 @@ test('deletes specified blog post', async () => {
   expect(blogsAtEnd).toHaveLength(initialBlogs.length - 1);
 });
 
+test('updates specified blog post', async () => {
+  const blogs = await Blog.find({});
+
+  const blogToUpdate = blogs[0].toJSON();
+  blogToUpdate.title = 'New title';
+  blogToUpdate.likes = 777;
+
+  await api.put(`/api/blogs/${blogToUpdate.id}`).send(blogToUpdate).expect(200);
+
+  const updatedBlog = await Blog.findById(blogToUpdate.id);
+
+  expect(updatedBlog.title).toBe('New title');
+  expect(updatedBlog.likes).toBe(777);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
