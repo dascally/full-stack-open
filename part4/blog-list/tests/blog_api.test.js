@@ -85,6 +85,16 @@ test('new posts missing title and url are rejected with 400 status code', async 
   await api.post('/api/blogs').send(newBlogPost).expect(400);
 });
 
+test('deletes specified blog post', async () => {
+  const blogs = await Blog.find({});
+  const blogToDelete = blogs[0].toJSON();
+
+  await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+
+  const blogsAtEnd = await Blog.find({});
+  expect(blogsAtEnd).toHaveLength(initialBlogs.length - 1);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
