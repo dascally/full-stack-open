@@ -48,6 +48,20 @@ test('returns blog post with "id" property', async () => {
   expect(res.body[0].id).toBeDefined();
 });
 
+test('creates a new post after receiving POST request', async () => {
+  const newBlogPost = {
+    title: 'A new post',
+    author: 'Tester',
+    url: 'http://www.test.test/test',
+    likes: 1,
+  };
+
+  await api.post('/api/blogs').send(newBlogPost);
+
+  const blogs = await Blog.find({});
+  expect(blogs.length).toBe(initialBlogs.length + 1);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });

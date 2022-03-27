@@ -18,15 +18,14 @@ blogsRouter.get('/:id', (req, res, next) => {
     .catch(next);
 });
 
-blogsRouter.post('/', (req, res, next) => {
-  const blog = new Blog(req.body);
-
-  blog
-    .save()
-    .then((result) => {
-      res.status(201).json(result);
-    })
-    .catch(next);
+blogsRouter.post('/', async (req, res, next) => {
+  try {
+    const blog = new Blog(req.body);
+    const result = await blog.save();
+    res.status(201).json(result);
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = blogsRouter;
