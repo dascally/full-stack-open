@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const blogsRouter = require('./routes/blogs.js');
+const usersRouter = require('./routes/users.js');
 
 const MONGODB_URI = require('./utils/config.js').MONGODB_URI;
 const app = express();
@@ -19,6 +20,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/blogs', blogsRouter);
+app.use('/api/users', usersRouter);
 
 app.use((err, req, res, next) => {
   if (err.name === 'ValidationError') {
