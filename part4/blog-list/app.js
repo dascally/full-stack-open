@@ -29,6 +29,8 @@ app.use((err, req, res, next) => {
     return res.status(400).json({ error: err.message });
   } else if (err.name === 'AuthError') {
     return res.status(401).json({ error: err.message });
+  } else if (err.name === 'TokenExpiredError') {
+    return res.status(401).json({ error: err.message });
   }
 
   return next(err);

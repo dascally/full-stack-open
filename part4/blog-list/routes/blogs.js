@@ -2,6 +2,9 @@ const jwt = require('jsonwebtoken');
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog.js');
 const User = require('../models/user.js');
+const middleware = require('../utils/middleware.js');
+
+blogsRouter.use(middleware.tokenExtractor);
 
 blogsRouter.get('/', async (req, res, next) => {
   try {
@@ -24,23 +27,15 @@ blogsRouter.get('/:id', (req, res, next) => {
     .catch(next);
 });
 
-const getTokenFromRequest = (req) => {
-  const authorization = req.get('Authorization');
-  const tokenMatch = authorization?.match(/^Bearer (?<token>\S+)$/i);
-
-  return tokenMatch ? tokenMatch.groups.token : null;
-};
-
 blogsRouter.post('/', async (req, res, next) => {
   try {
-    const token = getTokenFromRequest(req);
-    if (!token) {
+    if (!req.token) {
       const err = new Error('Missing token.');
       err.name = 'AuthError';
       throw err;
     }
 
-    const tokenPayload = jwt.verify(token, process.env.SECRET);
+    const tokenPayload = jwt.verify(req.token, process.env.SECRET);
     if (!tokenPayload.id) {
       const err = new Error('Invalid token.');
       err.name = 'AuthError';
