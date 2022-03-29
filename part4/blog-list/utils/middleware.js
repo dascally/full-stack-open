@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const SECRET = require('../utils/config.js').SECRET;
 const User = require('../models/user.js');
 
 const tokenExtractor = (req, res, next) => {
@@ -18,7 +19,7 @@ const userExtractor = async (req, res, next) => {
       throw err;
     }
 
-    const tokenPayload = jwt.verify(req.token, process.env.SECRET);
+    const tokenPayload = jwt.verify(req.token, SECRET);
     if (!tokenPayload.id) {
       const err = new Error('Invalid token.');
       err.name = 'AuthError';
