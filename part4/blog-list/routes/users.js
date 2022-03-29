@@ -8,7 +8,16 @@ usersRouter.post('/', async (req, res, next) => {
 
     const userExists = await User.findOne({ username });
     if (userExists) {
-      throw new Error('Username already exists.');
+      const err = new Error('Username already exists.');
+      err.name = 'ValidationError';
+      throw err;
+    }
+
+    const passwordIsValid = password.length >= 3;
+    if (!passwordIsValid) {
+      const err = new Error('Password must be at least 3 characters long.');
+      err.name = 'ValidationError';
+      throw err;
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
