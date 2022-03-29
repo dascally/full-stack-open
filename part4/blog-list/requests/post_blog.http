@@ -6,7 +6,7 @@ Content-Type: application/json
     "title": "Title of a newer post",
     "author": "Ebidaj",
     "url": "http://localhost/post-url",
-    "likes": 1580000000000
+    "likes": 144
 }
 
 ###

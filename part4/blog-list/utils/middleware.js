@@ -1,3 +1,6 @@
+const jwt = require('jsonwebtoken');
+const User = require('../models/user.js');
+
 const tokenExtractor = (req, res, next) => {
   const authorization = req.get('Authorization');
   const tokenMatch = authorization?.match(/^Bearer (?<token>\S+)$/i);
@@ -7,4 +10,27 @@ const tokenExtractor = (req, res, next) => {
   next();
 };
 
-module.exports = { tokenExtractor };
+const userExtractor = async (req, res, next) => {
+  try {
+    if (!req.token) {
+      const err = new Error('Missing token.');
+      err.name = 'AuthError';
+      throw err;
+    }
+
+    const tokenPayload = jwt.verify(req.token, process.env.SECRET);
+    if (!tokenPayload.id) {
+      const err = new Error('Invalid token.');
+      err.name = 'AuthError';
+      throw err;
+    }
+
+    req.user = await User.findById(tokenPayload.id);
+
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { tokenExtractor, userExtractor };
