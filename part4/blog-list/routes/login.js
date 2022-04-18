@@ -27,7 +27,7 @@ loginRouter.post('/', async (req, res, next) => {
       expiresIn: 3600,
     });
 
-    res.status(200).json({ token });
+    res.status(200).json({ token, username: user.username, name: user.name });
   } catch (err) {
     next(err);
   }
