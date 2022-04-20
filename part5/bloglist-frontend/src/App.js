@@ -8,16 +8,21 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [blogTitle, setBlogTitle] = useState('');
+  const [blogAuthor, setBlogAuthor] = useState('');
+  const [blogUrl, setBlogUrl] = useState('');
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
 
   useEffect(() => {
-    const user = localStorage.getItem('user');
+    const userJson = localStorage.getItem('user');
 
-    if (user) {
-      setUser(JSON.parse(user));
+    if (userJson) {
+      const user = JSON.parse(userJson);
+      setUser(user);
+      blogService.setToken(user.token);
     }
   }, []);
 
@@ -28,6 +33,7 @@ const App = () => {
       const user = await loginService.login(username, password);
 
       setUser(user);
+      blogService.setToken(user.token);
       setUsername('');
       setPassword('');
 
@@ -40,6 +46,26 @@ const App = () => {
   const handleLogoutClick = (evt) => {
     setUser(null);
     localStorage.removeItem('user');
+    blogService.setToken(null);
+  };
+
+  const handleCreatePostSubmit = async (evt) => {
+    evt.preventDefault();
+
+    try {
+      const newBlog = await blogService.create({
+        title: blogTitle,
+        author: blogAuthor,
+        url: blogUrl,
+      });
+
+      setBlogs([...blogs, newBlog]);
+      setBlogAuthor('');
+      setBlogTitle('');
+      setBlogUrl('');
+    } catch (err) {
+      console.error('Error creating new post:', err.message);
+    }
   };
 
   return (
@@ -86,9 +112,55 @@ const App = () => {
               Logout
             </button>
           </p>
+          <h3>Blog list</h3>
           {blogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />
           ))}
+          <h3>Create new post</h3>
+          <form onSubmit={handleCreatePostSubmit}>
+            <div>
+              <label htmlFor='title'>
+                Title{' '}
+                <input
+                  name='title'
+                  type='text'
+                  value={blogTitle}
+                  onChange={(evt) => {
+                    setBlogTitle(evt.target.value);
+                  }}
+                />
+              </label>
+            </div>
+            <div>
+              <label htmlFor='author'>
+                Author{' '}
+                <input
+                  name='author'
+                  type='text'
+                  value={blogAuthor}
+                  onChange={(evt) => {
+                    setBlogAuthor(evt.target.value);
+                  }}
+                />
+              </label>
+            </div>
+            <div>
+              <label htmlFor='url'>
+                URL{' '}
+                <input
+                  name='url'
+                  type='url'
+                  value={blogUrl}
+                  onChange={(evt) => {
+                    setBlogUrl(evt.target.value);
+                  }}
+                />
+              </label>
+            </div>
+            <div>
+              <button type='submit'>Create new post</button>
+            </div>
+          </form>
         </>
       )}
     </>
