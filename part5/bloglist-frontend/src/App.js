@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Blog from './components/Blog';
+import Notification from './components/Notification';
 import * as blogService from './services/blogs';
 import * as loginService from './services/login';
 
@@ -11,6 +12,20 @@ const App = () => {
   const [blogTitle, setBlogTitle] = useState('');
   const [blogAuthor, setBlogAuthor] = useState('');
   const [blogUrl, setBlogUrl] = useState('');
+  const [notification, setNotification] = useState(null);
+  const [notificationTimerId, setNotificationTimerId] = useState(null);
+
+  const showNotification = (message) => {
+    clearTimeout(notificationTimerId);
+
+    setNotification(message);
+
+    const timerId = setTimeout(() => {
+      setNotification(null);
+      setNotificationTimerId(null);
+    }, 3000);
+    setNotificationTimerId(timerId);
+  };
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -38,15 +53,19 @@ const App = () => {
       setPassword('');
 
       localStorage.setItem('user', JSON.stringify(user));
+
+      showNotification(`User ${user.name} logged in.`);
     } catch (err) {
       console.error('Invalid credentials:', err.message);
+      showNotification(`Invalid credentials: ${err.message}`);
     }
   };
 
   const handleLogoutClick = (evt) => {
+    showNotification(`User ${user.name} logged out.`);
     setUser(null);
-    localStorage.removeItem('user');
     blogService.setToken(null);
+    localStorage.removeItem('user');
   };
 
   const handleCreatePostSubmit = async (evt) => {
@@ -60,11 +79,16 @@ const App = () => {
       });
 
       setBlogs([...blogs, newBlog]);
+      showNotification(
+        `New blog post, ${blogTitle}, by ${blogAuthor}, created.`
+      );
+
       setBlogAuthor('');
       setBlogTitle('');
       setBlogUrl('');
     } catch (err) {
       console.error('Error creating new post:', err.message);
+      showNotification(`Error creating new blog post: ${err.message}`);
     }
   };
 
@@ -73,6 +97,7 @@ const App = () => {
       {user === null ? (
         <>
           <h2>Log in</h2>
+          <Notification message={notification} />
           <form onSubmit={handleLoginSubmit}>
             <div>
               <label htmlFor='username'>Username</label>
@@ -106,6 +131,7 @@ const App = () => {
       ) : (
         <>
           <h2>Blogs</h2>
+          <Notification message={notification} />
           <p>
             {user.name} is logged in.{' '}
             <button type='button' onClick={handleLogoutClick}>
