@@ -1,25 +1,12 @@
 import { useState, useEffect } from 'react';
 import * as noteService from './services/notes.js';
 import * as loginService from './services/login.js';
+import Footer from './components/Footer.js';
 import Note from './components/Note.js';
 import Notification from './components/Notification.js';
-
-const Footer = () => {
-  const footerStyle = {
-    color: 'green',
-    fontStyle: 'italic',
-    fontSize: '16px',
-  };
-
-  return (
-    <div style={footerStyle}>
-      <br />
-      <i>
-        Note app; Department of Computer Science, University of Helsinki; 2022
-      </i>
-    </div>
-  );
-};
+import LoginForm from './components/LoginForm.js';
+import NoteForm from './components/NoteForm.js';
+import Togglable from './components/Togglable.js';
 
 const App = () => {
   const [notes, setNotes] = useState([]);
@@ -108,37 +95,6 @@ const App = () => {
     }
   };
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        Username
-        <input
-          type='text'
-          name='username'
-          value={username}
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        Password
-        <input
-          type='password'
-          name='password'
-          value={password}
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type='submit'>Login</button>
-    </form>
-  );
-
-  const noteForm = () => (
-    <form onSubmit={addNote}>
-      <input value={newNote} onChange={handleNoteChange} />
-      <button type='submit'>Save</button>
-    </form>
-  );
-
   return (
     <div>
       <h1>Notes</h1>
@@ -146,11 +102,25 @@ const App = () => {
       <Notification message={errorMessage} />
 
       {user === null ? (
-        loginForm()
+        <Togglable buttonLabel='Login'>
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
+        </Togglable>
       ) : (
         <div>
           <p>{user.name} is logged in.</p>
-          {noteForm()}
+          <Togglable buttonLabel='New note'>
+            <NoteForm
+              onSubmit={addNote}
+              value={newNote}
+              handleChange={handleNoteChange}
+            />
+          </Togglable>
         </div>
       )}
 
