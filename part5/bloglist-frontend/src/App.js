@@ -83,11 +83,16 @@ const App = () => {
   };
 
   const likePost = async (blog) => {
-    const likedBlog = await blogService.like(blog);
-    const newBlogs = blogs.map((currentBlog) =>
-      currentBlog.id === blog.id ? likedBlog : currentBlog
-    );
-    setBlogs(newBlogs);
+    try {
+      const likedBlog = await blogService.like(blog);
+      const newBlogs = blogs.map((currentBlog) =>
+        currentBlog.id === blog.id ? likedBlog : currentBlog
+      );
+      setBlogs(newBlogs);
+    } catch (err) {
+      console.err('Error liking post:', err.message);
+      showNotification(`Error liking blog post: ${err.message}`);
+    }
   };
 
   return (
