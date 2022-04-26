@@ -41,7 +41,7 @@ const App = () => {
       .then((returnedNote) => {
         setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)));
       })
-      .catch((err) => {
+      .catch(() => {
         setErrorMessage(
           `The note '${note.content}' was already removed from the server.`
         );
