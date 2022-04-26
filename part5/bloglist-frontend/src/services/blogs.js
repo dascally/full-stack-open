@@ -18,3 +18,11 @@ export const create = async (newBlog) => {
   });
   return response.data;
 };
+
+export const like = async (blog) => {
+  const likedBlog = { ...blog, user: blog.user.id, likes: blog.likes + 1 };
+  const response = await axios.put(`${baseUrl}/${blog.id}`, likedBlog, {
+    headers: { 'Content-Type': 'application/json' },
+  });
+  return response.data;
+};

@@ -82,6 +82,14 @@ const App = () => {
     }
   };
 
+  const likePost = async (blog) => {
+    const likedBlog = await blogService.like(blog);
+    const newBlogs = blogs.map((currentBlog) =>
+      currentBlog.id === blog.id ? likedBlog : currentBlog
+    );
+    setBlogs(newBlogs);
+  };
+
   return (
     <>
       {user === null ? (
@@ -130,7 +138,7 @@ const App = () => {
           </p>
           <h3>Blog list</h3>
           {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} likePost={likePost} />
           ))}
           <Toggleable
             buttonLabel='Create new post'
