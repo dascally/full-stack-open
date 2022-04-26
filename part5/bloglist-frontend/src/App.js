@@ -75,7 +75,7 @@ const App = () => {
     try {
       const newBlog = await blogService.create({ title, author, url });
 
-      setBlogs([...blogs, newBlog]);
+      setBlogs([...blogs, { ...newBlog, user }]);
       showNotification(`New blog post, ${title}, by ${author}, created.`);
 
       setCreatePostIsVisible(false);
@@ -94,8 +94,26 @@ const App = () => {
       newBlogs.sort((a, b) => b.likes - a.likes);
       setBlogs(newBlogs);
     } catch (err) {
-      console.err('Error liking post:', err.message);
+      console.error('Error liking post:', err.message);
       showNotification(`Error liking blog post: ${err.message}`);
+    }
+  };
+
+  const removePost = async (blog) => {
+    try {
+      const confirmed = window.confirm(
+        `Remove the blog "${blog.title}" by ${blog.author}?`
+      );
+      if (!confirmed) return;
+
+      await blogService.remove(blog.id);
+      const newBlogs = blogs.filter(
+        (currentBlog) => currentBlog.id !== blog.id
+      );
+      setBlogs(newBlogs);
+    } catch (err) {
+      console.error('Error deleting post:', err.message);
+      showNotification(`Error deleting blog post: ${err.message}`);
     }
   };
 
@@ -147,7 +165,13 @@ const App = () => {
           </p>
           <h3>Blog list</h3>
           {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} likePost={likePost} />
+            <Blog
+              key={blog.id}
+              blog={blog}
+              likePost={likePost}
+              removePost={removePost}
+              currentUser={user.username}
+            />
           ))}
           <Toggleable
             buttonLabel='Create new post'

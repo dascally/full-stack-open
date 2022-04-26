@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const Blog = ({ blog, likePost }) => {
+const Blog = ({ blog, likePost, removePost, currentUser }) => {
   const [expanded, setExpanded] = useState(false);
 
   const blogStyle = {
@@ -22,6 +22,10 @@ const Blog = ({ blog, likePost }) => {
     evt.target.disabled = false;
   };
 
+  const handleRemoveClick = async (evt) => {
+    await removePost(blog);
+  };
+
   return (
     <div style={blogStyle}>
       <div>
@@ -39,6 +43,14 @@ const Blog = ({ blog, likePost }) => {
         </button>
         <br />
         User: {blog.user.name}
+        {blog.user.username === currentUser ? (
+          <>
+            <br />
+            <button type='button' onClick={handleRemoveClick}>
+              Remove
+            </button>
+          </>
+        ) : null}
       </div>
     </div>
   );

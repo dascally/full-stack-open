@@ -26,3 +26,9 @@ export const like = async (blog) => {
   });
   return response.data;
 };
+
+export const remove = async (blogId) => {
+  await axios.delete(`${baseUrl}/${blogId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+};
