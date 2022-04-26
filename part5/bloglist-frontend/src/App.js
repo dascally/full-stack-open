@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Blog from './components/Blog';
 import Notification from './components/Notification';
+import Toggleable from './components/Toggleable';
 import * as blogService from './services/blogs';
 import * as loginService from './services/login';
 
@@ -9,6 +10,7 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [createNoteIsVisible, setCreateNoteIsVisible] = useState(false);
   const [blogTitle, setBlogTitle] = useState('');
   const [blogAuthor, setBlogAuthor] = useState('');
   const [blogUrl, setBlogUrl] = useState('');
@@ -83,6 +85,7 @@ const App = () => {
         `New blog post, ${blogTitle}, by ${blogAuthor}, created.`
       );
 
+      setCreateNoteIsVisible(false);
       setBlogAuthor('');
       setBlogTitle('');
       setBlogUrl('');
@@ -142,51 +145,57 @@ const App = () => {
           {blogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />
           ))}
-          <h3>Create new post</h3>
-          <form onSubmit={handleCreatePostSubmit}>
-            <div>
-              <label htmlFor='title'>
-                Title{' '}
-                <input
-                  name='title'
-                  type='text'
-                  value={blogTitle}
-                  onChange={(evt) => {
-                    setBlogTitle(evt.target.value);
-                  }}
-                />
-              </label>
-            </div>
-            <div>
-              <label htmlFor='author'>
-                Author{' '}
-                <input
-                  name='author'
-                  type='text'
-                  value={blogAuthor}
-                  onChange={(evt) => {
-                    setBlogAuthor(evt.target.value);
-                  }}
-                />
-              </label>
-            </div>
-            <div>
-              <label htmlFor='url'>
-                URL{' '}
-                <input
-                  name='url'
-                  type='url'
-                  value={blogUrl}
-                  onChange={(evt) => {
-                    setBlogUrl(evt.target.value);
-                  }}
-                />
-              </label>
-            </div>
-            <div>
-              <button type='submit'>Create new post</button>
-            </div>
-          </form>
+          <Toggleable
+            buttonLabel='Create new post'
+            visible={createNoteIsVisible}
+            setVisible={setCreateNoteIsVisible}
+          >
+            <h3>Create new post</h3>
+            <form onSubmit={handleCreatePostSubmit}>
+              <div>
+                <label htmlFor='title'>
+                  Title{' '}
+                  <input
+                    name='title'
+                    type='text'
+                    value={blogTitle}
+                    onChange={(evt) => {
+                      setBlogTitle(evt.target.value);
+                    }}
+                  />
+                </label>
+              </div>
+              <div>
+                <label htmlFor='author'>
+                  Author{' '}
+                  <input
+                    name='author'
+                    type='text'
+                    value={blogAuthor}
+                    onChange={(evt) => {
+                      setBlogAuthor(evt.target.value);
+                    }}
+                  />
+                </label>
+              </div>
+              <div>
+                <label htmlFor='url'>
+                  URL{' '}
+                  <input
+                    name='url'
+                    type='url'
+                    value={blogUrl}
+                    onChange={(evt) => {
+                      setBlogUrl(evt.target.value);
+                    }}
+                  />
+                </label>
+              </div>
+              <div>
+                <button type='submit'>Create new post</button>
+              </div>
+            </form>
+          </Toggleable>
         </>
       )}
     </>
