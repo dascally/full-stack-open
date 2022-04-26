@@ -28,7 +28,10 @@ const App = () => {
   };
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService.getAll().then((blogs) => {
+      blogs.sort((a, b) => b.likes - a.likes);
+      setBlogs(blogs);
+    });
   }, []);
 
   useEffect(() => {
@@ -88,6 +91,7 @@ const App = () => {
       const newBlogs = blogs.map((currentBlog) =>
         currentBlog.id === blog.id ? likedBlog : currentBlog
       );
+      newBlogs.sort((a, b) => b.likes - a.likes);
       setBlogs(newBlogs);
     } catch (err) {
       console.err('Error liking post:', err.message);
