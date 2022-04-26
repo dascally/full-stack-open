@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Blog from './components/Blog';
 import Notification from './components/Notification';
 import Toggleable from './components/Toggleable';
+import NewPostForm from './components/NewPostForm';
 import * as blogService from './services/blogs';
 import * as loginService from './services/login';
 
@@ -10,10 +11,7 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [createNoteIsVisible, setCreateNoteIsVisible] = useState(false);
-  const [blogTitle, setBlogTitle] = useState('');
-  const [blogAuthor, setBlogAuthor] = useState('');
-  const [blogUrl, setBlogUrl] = useState('');
+  const [createPostIsVisible, setCreatePostIsVisible] = useState(false);
   const [notification, setNotification] = useState(null);
   const [notificationTimerId, setNotificationTimerId] = useState(null);
 
@@ -70,25 +68,14 @@ const App = () => {
     localStorage.removeItem('user');
   };
 
-  const handleCreatePostSubmit = async (evt) => {
-    evt.preventDefault();
-
+  const createPost = async ({ title, author, url }) => {
     try {
-      const newBlog = await blogService.create({
-        title: blogTitle,
-        author: blogAuthor,
-        url: blogUrl,
-      });
+      const newBlog = await blogService.create({ title, author, url });
 
       setBlogs([...blogs, newBlog]);
-      showNotification(
-        `New blog post, ${blogTitle}, by ${blogAuthor}, created.`
-      );
+      showNotification(`New blog post, ${title}, by ${author}, created.`);
 
-      setCreateNoteIsVisible(false);
-      setBlogAuthor('');
-      setBlogTitle('');
-      setBlogUrl('');
+      setCreatePostIsVisible(false);
     } catch (err) {
       console.error('Error creating new post:', err.message);
       showNotification(`Error creating new blog post: ${err.message}`);
@@ -147,54 +134,11 @@ const App = () => {
           ))}
           <Toggleable
             buttonLabel='Create new post'
-            visible={createNoteIsVisible}
-            setVisible={setCreateNoteIsVisible}
+            visible={createPostIsVisible}
+            setVisible={setCreatePostIsVisible}
           >
             <h3>Create new post</h3>
-            <form onSubmit={handleCreatePostSubmit}>
-              <div>
-                <label htmlFor='title'>
-                  Title{' '}
-                  <input
-                    name='title'
-                    type='text'
-                    value={blogTitle}
-                    onChange={(evt) => {
-                      setBlogTitle(evt.target.value);
-                    }}
-                  />
-                </label>
-              </div>
-              <div>
-                <label htmlFor='author'>
-                  Author{' '}
-                  <input
-                    name='author'
-                    type='text'
-                    value={blogAuthor}
-                    onChange={(evt) => {
-                      setBlogAuthor(evt.target.value);
-                    }}
-                  />
-                </label>
-              </div>
-              <div>
-                <label htmlFor='url'>
-                  URL{' '}
-                  <input
-                    name='url'
-                    type='url'
-                    value={blogUrl}
-                    onChange={(evt) => {
-                      setBlogUrl(evt.target.value);
-                    }}
-                  />
-                </label>
-              </div>
-              <div>
-                <button type='submit'>Create new post</button>
-              </div>
-            </form>
+            <NewPostForm createPost={createPost} />
           </Toggleable>
         </>
       )}
