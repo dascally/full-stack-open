@@ -16,7 +16,7 @@ function renderBlog() {
   const likePost = jest.fn();
   const removePost = jest.fn();
 
-  render(
+  const renderResult = render(
     <Blog
       blog={blog}
       likePost={likePost}
@@ -24,6 +24,8 @@ function renderBlog() {
       currentUser={user.username}
     />
   );
+
+  return { ...renderResult, likePost, removePost };
 }
 
 test("renders blog's title and author but not URL or likes by default", () => {
@@ -47,4 +49,19 @@ test('renders the URL and likes after the show button is clicked', async () => {
   expect(
     screen.getByText(`Likes: ${blog.likes}`, { exact: false })
   ).toBeVisible();
+});
+
+test('calls like event handler each time like button is clicked', async () => {
+  const { likePost } = renderBlog();
+  const user = userEvent.setup();
+
+  const showBtn = screen.getByRole('button', { name: /Show/i });
+  await user.click(showBtn);
+
+  const likeBtn = screen.getByRole('button', { name: /Like/i });
+  expect(likePost).not.toHaveBeenCalled();
+  await user.click(likeBtn);
+  expect(likePost).toHaveBeenCalledTimes(1);
+  await user.click(likeBtn);
+  expect(likePost).toHaveBeenCalledTimes(2);
 });
