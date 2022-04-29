@@ -21,6 +21,7 @@ const NewPostForm = ({ createPost }) => {
         <label htmlFor='title'>
           Title{' '}
           <input
+            id='title'
             name='title'
             type='text'
             value={title}
@@ -34,6 +35,7 @@ const NewPostForm = ({ createPost }) => {
         <label htmlFor='author'>
           Author{' '}
           <input
+            id='author'
             name='author'
             type='text'
             value={author}
@@ -47,6 +49,7 @@ const NewPostForm = ({ createPost }) => {
         <label htmlFor='url'>
           URL{' '}
           <input
+            id='url'
             name='url'
             type='url'
             value={url}
