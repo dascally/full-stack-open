@@ -25,6 +25,11 @@ app.use('/api/blogs', middleware.tokenExtractor, blogsRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/login', loginRouter);
 
+if (process.env.NODE_ENV === 'test') {
+  const testingRouter = require('./routes/testing.js');
+  app.use('/api/testing', testingRouter);
+}
+
 app.use((err, req, res, next) => {
   if (err.name === 'ValidationError') {
     return res.status(400).json({ error: err.message });
