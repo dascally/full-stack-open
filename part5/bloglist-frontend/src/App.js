@@ -127,6 +127,7 @@ const App = () => {
             <div>
               <label htmlFor='username'>Username</label>
               <input
+                id='username'
                 type='text'
                 name='username'
                 required
@@ -139,6 +140,7 @@ const App = () => {
             <div>
               <label htmlFor='password'>Password</label>
               <input
+                id='password'
                 type='password'
                 name='password'
                 required
