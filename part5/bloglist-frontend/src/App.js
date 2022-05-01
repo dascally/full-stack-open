@@ -165,24 +165,26 @@ const App = () => {
               Logout
             </button>
           </p>
-          <h3>Blog list</h3>
-          {blogs.map((blog) => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              likePost={likePost}
-              removePost={removePost}
-              currentUser={user.username}
-            />
-          ))}
-          <Toggleable
-            buttonLabel='Create new post'
-            visible={createPostIsVisible}
-            setVisible={setCreatePostIsVisible}
-          >
-            <h3>Create new post</h3>
-            <NewPostForm createPost={createPost} />
-          </Toggleable>
+          <section>
+            <h3>Blog list</h3>
+            {blogs.map((blog) => (
+              <Blog
+                key={blog.id}
+                blog={blog}
+                likePost={likePost}
+                removePost={removePost}
+                currentUser={user.username}
+              />
+            ))}
+            <Toggleable
+              buttonLabel='Create new post'
+              visible={createPostIsVisible}
+              setVisible={setCreatePostIsVisible}
+            >
+              <h3>Create new post</h3>
+              <NewPostForm createPost={createPost} />
+            </Toggleable>
+          </section>
         </>
       )}
     </>
