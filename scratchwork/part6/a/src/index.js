@@ -1,17 +1,51 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { createStore } from 'redux';
+// import App from './App';
+import noteReducer from './reducers/noteReducer';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+const store = createStore(noteReducer);
+
+store.dispatch({
+  type: 'NEW_NOTE',
+  data: {
+    content: 'the app state is in redux store',
+    important: true,
+    id: 1,
+  },
+});
+
+store.dispatch({
+  type: 'NEW_NOTE',
+  data: {
+    content: 'state changes are made with actions',
+    important: false,
+    id: 2,
+  },
+});
+
+const App = () => (
+  <div>
+    <ul>
+      {store.getState().map((note) => (
+        <li key={note.id}>
+          {note.content} <strong>{note.important ? 'important' : ''}</strong>
+        </li>
+      ))}
+    </ul>
+  </div>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+const root = ReactDOM.createRoot(document.getElementById('root'));
+const renderApp = () => {
+  root.render(<App />);
+};
+
+renderApp();
+store.subscribe(renderApp);
+
+// ReactDOM.createRoot(document.getElementById('root')).render(
+// <Provider store={store}>
+// <App />
+// </Provider>
+// )
