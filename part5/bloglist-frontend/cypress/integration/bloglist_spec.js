@@ -69,4 +69,41 @@ describe('When logged in', () => {
           .should('have.length', length + 1);
       });
   });
+
+  describe("When there's a blog post", () => {
+    beforeEach(() => {
+      cy.window().then((window) => {
+        const jwt = JSON.parse(window.localStorage.getItem('user')).token;
+
+        cy.request({
+          method: 'POST',
+          url: 'http://localhost:3003/api/blogs',
+          auth: { bearer: jwt },
+          body: {
+            title: 'Title of a newer post',
+            author: 'Test User',
+            url: 'http://localhost/post-url',
+          },
+        });
+      });
+
+      cy.visit('/');
+    });
+
+    it('can like a blog post', () => {
+      cy.findByRole('button', { name: /show/i })
+        .click()
+        .parent()
+        .parent()
+        .findByText(/Likes: \d+/i)
+        .then(($elt) => {
+          const likesBefore = +$elt[0].textContent.match(/Likes: (\d+)/i)[1];
+
+          cy.findByRole('button', { name: /Like/i })
+            .click()
+            .parent()
+            .contains(`Likes: ${likesBefore + 1}`);
+        });
+    });
+  });
 });
