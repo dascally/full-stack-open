@@ -118,4 +118,53 @@ describe('When logged in', () => {
         .should('not.contain', 'Title of a newer post');
     });
   });
+
+  describe('when there are multiple blog posts', () => {
+    beforeEach(() => {
+      cy.window().then((window) => {
+        const jwt = JSON.parse(window.localStorage.getItem('user')).token;
+
+        cy.request({
+          method: 'POST',
+          url: 'http://localhost:3003/api/blogs',
+          auth: { bearer: jwt },
+          body: {
+            title: 'Post with fewer likes',
+            author: 'Test User',
+            url: 'http://localhost/post-url',
+          },
+        });
+        cy.request({
+          method: 'POST',
+          url: 'http://localhost:3003/api/blogs',
+          auth: { bearer: jwt },
+          body: {
+            title: 'Post with more likes',
+            author: 'Test User',
+            url: 'http://localhost/post-url',
+            likes: 5,
+          },
+        });
+        cy.request({
+          method: 'POST',
+          url: 'http://localhost:3003/api/blogs',
+          auth: { bearer: jwt },
+          body: {
+            title: 'Post with intermediate number of likes',
+            author: 'Test User',
+            url: 'http://localhost/post-url',
+            likes: 3,
+          },
+        });
+      });
+
+      cy.visit('/');
+    });
+
+    it('orders blog posts from most likes to fewest', () => {
+      cy.findAllByTestId('blog').eq(0).should('contain', 'more likes');
+      cy.findAllByTestId('blog').eq(1).should('contain', 'intermediate number');
+      cy.findAllByTestId('blog').eq(2).should('contain', 'fewer likes');
+    });
+  });
 });
