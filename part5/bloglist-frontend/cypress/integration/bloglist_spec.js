@@ -105,5 +105,17 @@ describe('When logged in', () => {
             .contains(`Likes: ${likesBefore + 1}`);
         });
     });
+
+    it('allows user to delete a blog post they created', () => {
+      cy.findByRole('button', { name: /show/i })
+        .click()
+        .parent()
+        .parent()
+        .findByRole('button', { name: /remove/i })
+        .click();
+      cy.findByRole('heading', { name: /blog list/i })
+        .parent()
+        .should('not.contain', 'Title of a newer post');
+    });
   });
 });
