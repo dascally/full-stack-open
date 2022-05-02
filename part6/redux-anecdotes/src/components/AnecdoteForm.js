@@ -12,12 +12,15 @@ const AnecdoteForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <input type='text' name='content' required />
-      </div>
-      <button>create</button>
-    </form>
+    <>
+      <h2>create new</h2>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <input type='text' name='content' required />
+        </div>
+        <button>create</button>
+      </form>
+    </>
   );
 };
 
