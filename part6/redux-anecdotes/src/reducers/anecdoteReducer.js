@@ -7,7 +7,7 @@
 //   'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
 // ];
 
-const getId = () => (100000 * Math.random()).toFixed(0);
+// const getId = () => (100000 * Math.random()).toFixed(0);
 
 // const asObject = (anecdote) => {
 //   return {
@@ -20,8 +20,8 @@ const getId = () => (100000 * Math.random()).toFixed(0);
 // const initialState = anecdotesAtStart.map(asObject);
 
 const reducer = (state = [], action) => {
-  console.log('state now: ', state);
-  console.log('action', action);
+  // console.log('state now: ', state);
+  // console.log('action', action);
 
   switch (action.type) {
     case 'VOTE':
@@ -31,11 +31,7 @@ const reducer = (state = [], action) => {
           : anecdote
       );
     case 'ADD':
-      return state.concat({
-        content: action.payload.content,
-        id: getId(),
-        votes: 0,
-      });
+      return state.concat(action.payload);
     case 'ADD_ALL':
       return action.payload;
     default:
@@ -48,9 +44,9 @@ export const voteForAnecdote = (id) => ({
   payload: { id },
 });
 
-export const addAnecdote = (content) => ({
+export const addAnecdote = (anecdote) => ({
   type: 'ADD',
-  payload: { content },
+  payload: anecdote,
 });
 
 export const addAllAnecdotes = (anecdotes) => ({
