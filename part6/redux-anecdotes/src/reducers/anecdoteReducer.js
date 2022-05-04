@@ -1,3 +1,5 @@
+import * as anecdoteService from '../services/anecdotes';
+
 // const anecdotesAtStart = [
 //   'If it hurts, do it more often',
 //   'Adding manpower to a late software project makes it later!',
@@ -53,5 +55,10 @@ export const addAllAnecdotes = (anecdotes) => ({
   type: 'ADD_ALL',
   payload: anecdotes,
 });
+
+export const initializeAnecdotes = () => async (dispatch) => {
+  const anecdotes = await anecdoteService.getAll();
+  dispatch(addAllAnecdotes(anecdotes));
+};
 
 export default reducer;
