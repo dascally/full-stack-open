@@ -1,4 +1,5 @@
 import * as anecdoteService from '../services/anecdotes';
+import { setNotification, clearNotification } from './notificationReducer';
 
 // const anecdotesAtStart = [
 //   'If it hurts, do it more often',
@@ -46,10 +47,18 @@ export const voteForAnecdote = (id) => ({
   payload: { id },
 });
 
-export const addAnecdote = (anecdote) => ({
-  type: 'ADD',
-  payload: anecdote,
-});
+export const addAnecdote = (content) => async (dispatch) => {
+  const anecdote = await anecdoteService.addAnecdote(content);
+  dispatch({
+    type: 'ADD',
+    payload: anecdote,
+  });
+
+  dispatch(setNotification('Added a new anecdote.'));
+  setTimeout(() => {
+    dispatch(clearNotification());
+  }, 5000);
+};
 
 export const addAllAnecdotes = (anecdotes) => ({
   type: 'ADD_ALL',
