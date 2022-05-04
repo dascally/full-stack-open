@@ -1,58 +1,32 @@
+import { createSlice } from '@reduxjs/toolkit';
 import * as anecdoteService from '../services/anecdotes';
 import { setNotification, clearNotification } from './notificationReducer';
 
-// const anecdotesAtStart = [
-//   'If it hurts, do it more often',
-//   'Adding manpower to a late software project makes it later!',
-//   'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
-//   'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
-//   'Premature optimization is the root of all evil.',
-//   'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
-// ];
-
-// const getId = () => (100000 * Math.random()).toFixed(0);
-
-// const asObject = (anecdote) => {
-//   return {
-//     content: anecdote,
-//     id: getId(),
-//     votes: 0,
-//   };
-// };
-
-// const initialState = anecdotesAtStart.map(asObject);
-
-const reducer = (state = [], action) => {
-  // console.log('state now: ', state);
-  // console.log('action', action);
-
-  switch (action.type) {
-    case 'VOTE':
+const anecdotesSlice = createSlice({
+  name: 'anecdotes',
+  initialState: [],
+  reducers: {
+    vote(state, action) {
       return state.map((anecdote) =>
-        anecdote.id === action.payload.id
+        anecdote.id === action.payload
           ? { ...anecdote, votes: anecdote.votes + 1 }
           : anecdote
       );
-    case 'ADD':
-      return state.concat(action.payload);
-    case 'ADD_ALL':
+    },
+    add(state, action) {
+      state.push(action.payload);
+    },
+    addAll(state, action) {
       return action.payload;
-    default:
-      return state;
-  }
-};
-
-export const voteForAnecdote = (id) => ({
-  type: 'VOTE',
-  payload: { id },
+    },
+  },
 });
+
+export const { vote, add, addAll } = anecdotesSlice.actions;
 
 export const addAnecdote = (content) => async (dispatch) => {
   const anecdote = await anecdoteService.addAnecdote(content);
-  dispatch({
-    type: 'ADD',
-    payload: anecdote,
-  });
+  dispatch(add(anecdote));
 
   dispatch(setNotification('Added a new anecdote.'));
   setTimeout(() => {
@@ -60,14 +34,21 @@ export const addAnecdote = (content) => async (dispatch) => {
   }, 5000);
 };
 
-export const addAllAnecdotes = (anecdotes) => ({
-  type: 'ADD_ALL',
-  payload: anecdotes,
-});
+export const voteForAnecdote = (anecdote) => async (dispatch) => {
+  await anecdoteService.voteForAnecdote(anecdote);
+  dispatch(vote(anecdote.id));
+
+  dispatch(
+    setNotification(`Voted for the following anecdote: ${anecdote.content}`)
+  );
+  setTimeout(() => {
+    dispatch(clearNotification());
+  }, 5000);
+};
 
 export const initializeAnecdotes = () => async (dispatch) => {
   const anecdotes = await anecdoteService.getAll();
-  dispatch(addAllAnecdotes(anecdotes));
+  dispatch(addAll(anecdotes));
 };
 
-export default reducer;
+export default anecdotesSlice.reducer;
