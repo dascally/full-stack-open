@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, Route, Routes, useMatch } from 'react-router-dom';
+import { useRef, useState } from 'react';
+import { Link, Route, Routes, useMatch, useNavigate } from 'react-router-dom';
 
 const Menu = () => {
   const padding = {
@@ -81,6 +81,7 @@ const Footer = () => (
 );
 
 const CreateNew = (props) => {
+  const navigate = useNavigate();
   const [content, setContent] = useState('');
   const [author, setAuthor] = useState('');
   const [info, setInfo] = useState('');
@@ -93,6 +94,8 @@ const CreateNew = (props) => {
       info,
       votes: 0,
     });
+    props.setTimedNotification(`A new anecdote, ${content}, has been created!`);
+    navigate('/');
   };
 
   return (
@@ -129,6 +132,8 @@ const CreateNew = (props) => {
   );
 };
 
+const Notification = ({ message }) => (message ? <p>{message}</p> : null);
+
 const App = () => {
   const [anecdotes, setAnecdotes] = useState([
     {
@@ -148,6 +153,15 @@ const App = () => {
   ]);
 
   const [notification, setNotification] = useState('');
+
+  let timerIDRef = useRef();
+  const setTimedNotification = (message) => {
+    clearTimeout(timerIDRef.current);
+    setNotification(message);
+    timerIDRef.current = setTimeout(() => {
+      setNotification('');
+    }, 5000);
+  };
 
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000);
@@ -174,6 +188,7 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
+      <Notification message={notification} />
 
       <Routes>
         <Route index element={<AnecdoteList anecdotes={anecdotes} />} />
@@ -182,7 +197,15 @@ const App = () => {
           element={<Anecdote anecdote={anecdote} />}
         />
         <Route path='/about' element={<About />} />
-        <Route path='/create' element={<CreateNew addNew={addNew} />} />
+        <Route
+          path='/create'
+          element={
+            <CreateNew
+              addNew={addNew}
+              setTimedNotification={setTimedNotification}
+            />
+          }
+        />
       </Routes>
 
       <Footer />
