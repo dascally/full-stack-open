@@ -7,8 +7,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import App from './App';
 import Blogs from './Blogs';
 import Users from './Users';
-import UsersSummary from './components/UsersSummary';
-import User from './components/User';
+import UsersSummary from './UsersSummary';
+import User from './User';
 
 ReactDOM.render(
   <Provider store={store}>
@@ -16,10 +16,10 @@ ReactDOM.render(
       <Routes>
         <Route path='/' element={<App />}>
           <Route index element={<Blogs />} />
-          <Route path='/blogs' element={<Blogs />} />
+          <Route path='/blogs/*' element={<Blogs />} />
           <Route path='/users' element={<Users />}>
             <Route index element={<UsersSummary />} />
-            <Route path='/users/:userId' element={<User />} />
+            <Route path=':userId' element={<User />} />
           </Route>
         </Route>
       </Routes>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 const Blog = ({ blog, likePost, removePost, currentUser }) => {
   const [expanded, setExpanded] = useState(false);
@@ -30,7 +31,7 @@ const Blog = ({ blog, likePost, removePost, currentUser }) => {
   return (
     <div style={blogStyle} data-testid='blog'>
       <div>
-        {blog.title}, by {blog.author}{' '}
+        <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>, by {blog.author}{' '}
         <button type='button' onClick={handleToggleClick}>
           {expanded ? 'Hide' : 'Show'}
         </button>
