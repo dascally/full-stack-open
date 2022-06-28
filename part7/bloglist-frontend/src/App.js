@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { set3sNotification } from './reducers/notificationSlice';
+import { createBlogPost, getBlogPosts } from './reducers/blogSlice';
 import Blog from './components/Blog';
 import Notification from './components/Notification';
 import Toggleable from './components/Toggleable';
@@ -11,7 +12,7 @@ import * as loginService from './services/login';
 const App = () => {
   const dispatch = useDispatch();
 
-  const [blogs, setBlogs] = useState([]);
+  const blogs = useSelector((state) => state.blog);
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -23,11 +24,8 @@ const App = () => {
   };
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => {
-      blogs.sort((a, b) => b.likes - a.likes);
-      setBlogs(blogs);
-    });
-  }, []);
+    dispatch(getBlogPosts());
+  }, [dispatch]);
 
   useEffect(() => {
     const userJson = localStorage.getItem('user');
@@ -67,17 +65,16 @@ const App = () => {
   };
 
   const createPost = async ({ title, author, url }) => {
-    try {
-      const newBlog = await blogService.create({ title, author, url });
-
-      setBlogs([...blogs, { ...newBlog, user }]);
-      showNotification(`New blog post, ${title}, by ${author}, created.`);
-
-      setCreatePostIsVisible(false);
-    } catch (err) {
-      console.error('Error creating new post:', err.message);
-      showNotification(`Error creating new blog post: ${err.message}`);
-    }
+    dispatch(createBlogPost({ title, author, url, user }))
+      .unwrap()
+      .then((result) => {
+        showNotification(`New blog post, ${title}, by ${author}, created.`);
+        setCreatePostIsVisible(false);
+      })
+      .catch((err) => {
+        showNotification(`Error creating new blog post: ${err.message}`);
+        console.error('Error creating new post:', err.message);
+      });
   };
 
   const likePost = async (blog) => {
@@ -87,7 +84,8 @@ const App = () => {
         currentBlog.id === blog.id ? likedBlog : currentBlog
       );
       newBlogs.sort((a, b) => b.likes - a.likes);
-      setBlogs(newBlogs);
+      // FIXME
+      // setBlogs(newBlogs);
     } catch (err) {
       console.error('Error liking post:', err.message);
       showNotification(`Error liking blog post: ${err.message}`);
@@ -105,7 +103,8 @@ const App = () => {
       const newBlogs = blogs.filter(
         (currentBlog) => currentBlog.id !== blog.id
       );
-      setBlogs(newBlogs);
+      // FIXME
+      // setBlogs(newBlogs);
     } catch (err) {
       console.error('Error deleting post:', err.message);
       showNotification(`Error deleting blog post: ${err.message}`);
