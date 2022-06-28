@@ -81,4 +81,16 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (req, res, next) => {
   }
 });
 
+blogsRouter.post('/:id/comments', async (req, res, next) => {
+  try {
+    const blog = await Blog.findById(req.params.id);
+    blog.comments.push(req.body.comment);
+    const savedBlog = await blog.save();
+
+    res.json(savedBlog);
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = blogsRouter;
