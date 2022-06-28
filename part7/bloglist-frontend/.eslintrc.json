@@ -1,0 +1,13 @@
+{
+  "env": {
+    "browser": true
+  },
+  "extends": ["react-app", "react-app/jest", "plugin:cypress/recommended"],
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "module"
+  },
+  "rules": {
+    "react/button-has-type": "error"
+  }
+}
