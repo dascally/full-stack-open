@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { set3sNotification } from './reducers/notificationSlice';
 import Blog from './components/Blog';
 import Notification from './components/Notification';
 import Toggleable from './components/Toggleable';
@@ -7,24 +9,17 @@ import * as blogService from './services/blogs';
 import * as loginService from './services/login';
 
 const App = () => {
+  const dispatch = useDispatch();
+
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [createPostIsVisible, setCreatePostIsVisible] = useState(false);
-  const [notification, setNotification] = useState(null);
-  const [notificationTimerId, setNotificationTimerId] = useState(null);
 
+  const notification = useSelector((state) => state.notification);
   const showNotification = (message) => {
-    clearTimeout(notificationTimerId);
-
-    setNotification(message);
-
-    const timerId = setTimeout(() => {
-      setNotification(null);
-      setNotificationTimerId(null);
-    }, 3000);
-    setNotificationTimerId(timerId);
+    dispatch(set3sNotification(message));
   };
 
   useEffect(() => {
