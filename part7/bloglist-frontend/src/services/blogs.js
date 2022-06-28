@@ -32,3 +32,14 @@ export const remove = async (blogId) => {
     headers: { Authorization: `Bearer ${token}` },
   });
 };
+
+export const addComment = async (blogId, comment) => {
+  const response = await axios.post(
+    `${baseUrl}/${blogId}/comments`,
+    { comment },
+    {
+      headers: { 'Content-Type': 'application/json' },
+    }
+  );
+  return response.data;
+};
