@@ -6,6 +6,7 @@ import store from './store';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import App from './App';
 import Blogs from './Blogs';
+import Users from './Users';
 
 ReactDOM.render(
   <Provider store={store}>
@@ -14,6 +15,7 @@ ReactDOM.render(
         <Route path='/' element={<App />}>
           <Route index element={<Blogs />} />
           <Route path='/blogs' element={<Blogs />} />
+          <Route path='/users' element={<Users />} />
         </Route>
       </Routes>
     </BrowserRouter>
