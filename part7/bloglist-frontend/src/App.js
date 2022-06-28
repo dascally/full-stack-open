@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { set3sNotification } from './reducers/notificationSlice';
-import { createBlogPost, getBlogPosts } from './reducers/blogSlice';
+import {
+  createBlogPost,
+  deleteBlogPost,
+  getBlogPosts,
+  likeBlogPost,
+} from './reducers/blogSlice';
 import Blog from './components/Blog';
 import Notification from './components/Notification';
 import Toggleable from './components/Toggleable';
@@ -78,37 +83,32 @@ const App = () => {
   };
 
   const likePost = async (blog) => {
-    try {
-      const likedBlog = await blogService.like(blog);
-      const newBlogs = blogs.map((currentBlog) =>
-        currentBlog.id === blog.id ? likedBlog : currentBlog
-      );
-      newBlogs.sort((a, b) => b.likes - a.likes);
-      // FIXME
-      // setBlogs(newBlogs);
-    } catch (err) {
-      console.error('Error liking post:', err.message);
-      showNotification(`Error liking blog post: ${err.message}`);
-    }
+    dispatch(likeBlogPost(blog))
+      .unwrap()
+      .then((result) => {
+        showNotification(`Liked the blog post "${blog.title}".`);
+      })
+      .catch((err) => {
+        showNotification(`Error liking blog post: ${err.message}`);
+        console.error('Error liking post:', err.message);
+      });
   };
 
   const removePost = async (blog) => {
-    try {
-      const confirmed = window.confirm(
-        `Remove the blog "${blog.title}" by ${blog.author}?`
-      );
-      if (!confirmed) return;
+    const confirmed = window.confirm(
+      `Remove the blog "${blog.title}" by ${blog.author}?`
+    );
+    if (!confirmed) return;
 
-      await blogService.remove(blog.id);
-      const newBlogs = blogs.filter(
-        (currentBlog) => currentBlog.id !== blog.id
-      );
-      // FIXME
-      // setBlogs(newBlogs);
-    } catch (err) {
-      console.error('Error deleting post:', err.message);
-      showNotification(`Error deleting blog post: ${err.message}`);
-    }
+    dispatch(deleteBlogPost(blog.id))
+      .unwrap()
+      .then((result) => {
+        showNotification(`Deleted the blog post "${blog.title}".`);
+      })
+      .catch((err) => {
+        showNotification(`Error deleting blog post: ${err.message}`);
+        console.error('Error deleting post:', err.message);
+      });
   };
 
   return (

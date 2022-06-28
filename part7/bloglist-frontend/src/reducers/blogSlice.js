@@ -14,6 +14,22 @@ export const createBlogPost = createAsyncThunk(
   }
 );
 
+export const likeBlogPost = createAsyncThunk(
+  'blog/likeBlogPost',
+  async (blog) => {
+    const likedBlog = await blogService.like(blog);
+    return likedBlog;
+  }
+);
+
+export const deleteBlogPost = createAsyncThunk(
+  'blog/deleteBlogPost',
+  async (blogId) => {
+    await blogService.remove(blogId);
+    return blogId;
+  }
+);
+
 const blogSlice = createSlice({
   name: 'blog',
   initialState: [],
@@ -23,6 +39,18 @@ const blogSlice = createSlice({
     builder.addCase(createBlogPost.fulfilled, (state, action) =>
       state.concat(action.payload)
     );
+    builder.addCase(likeBlogPost.fulfilled, (state, action) => {
+      const likedBlog = action.payload;
+      const newBlogs = state.map((blog) =>
+        blog.id === likedBlog.id ? likedBlog : blog
+      );
+      return newBlogs.sort((a, b) => b.likes - a.likes);
+    });
+    builder.addCase(deleteBlogPost.fulfilled, (state, action) => {
+      const deletedBlogId = action.payload;
+      const newBlogs = state.filter((blog) => blog.id !== deletedBlogId);
+      return newBlogs;
+    });
   },
 });
 
