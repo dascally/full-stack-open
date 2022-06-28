@@ -1,0 +1,27 @@
+POST http://localhost:3003/api/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "Ebidaj",
+    "password": "badger"
+}
+
+###
+
+POST http://localhost:3003/api/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "Ebidaj",
+    "password": "wrong-password"
+}
+
+###
+
+POST http://localhost:3003/api/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "Ngost",
+    "password": "123"
+}

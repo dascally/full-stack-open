@@ -1,0 +1,9 @@
+PUT http://localhost:3003/api/blogs/6268445fda8f4264272fedfb HTTP/1.1
+Content-Type: application/json
+
+{
+  "title": "Here's an updated newer post",
+  "author": "Ebidaj",
+  "url": "http://localhost/post-url",
+  "likes": 14
+}
