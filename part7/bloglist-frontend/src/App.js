@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { set3sNotification } from './reducers/notificationSlice';
 import { login, setUser } from './reducers/userSlice';
 
-import { Outlet } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 import Notification from './components/Notification';
 
 const App = () => {
@@ -55,10 +55,30 @@ const App = () => {
 
   return (
     <>
+      <nav
+        style={{
+          display: 'flex',
+          gap: '1rem',
+          alignItems: 'center',
+          padding: '1rem',
+          background: '#ddd',
+        }}
+      >
+        <Link to='/blogs'>Blogs</Link>
+        <Link to='/users'>Users</Link>
+        {user ? (
+          <p style={{ margin: '0' }}>
+            {user.name} is logged in.{' '}
+            <button type='button' onClick={handleLogoutClick}>
+              Logout
+            </button>
+          </p>
+        ) : null}
+      </nav>
+      <Notification message={notification} />
       {user === null ? (
         <>
           <h2>Log in</h2>
-          <Notification message={notification} />
           <form onSubmit={handleLoginSubmit}>
             <div>
               <label htmlFor='username'>Username</label>
@@ -93,14 +113,6 @@ const App = () => {
         </>
       ) : (
         <>
-          <Notification message={notification} />
-          <p>
-            {user.name} is logged in.{' '}
-            <button type='button' onClick={handleLogoutClick}>
-              Logout
-            </button>
-          </p>
-
           <Outlet />
         </>
       )}
