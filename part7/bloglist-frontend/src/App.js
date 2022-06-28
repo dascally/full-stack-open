@@ -7,18 +7,17 @@ import {
   getBlogPosts,
   likeBlogPost,
 } from './reducers/blogSlice';
+import { login, setUser } from './reducers/userSlice';
 import Blog from './components/Blog';
 import Notification from './components/Notification';
 import Toggleable from './components/Toggleable';
 import NewPostForm from './components/NewPostForm';
-import * as blogService from './services/blogs';
-import * as loginService from './services/login';
 
 const App = () => {
   const dispatch = useDispatch();
 
   const blogs = useSelector((state) => state.blog);
-  const [user, setUser] = useState(null);
+  const user = useSelector((state) => state.user);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [createPostIsVisible, setCreatePostIsVisible] = useState(false);
@@ -37,35 +36,32 @@ const App = () => {
 
     if (userJson) {
       const user = JSON.parse(userJson);
-      setUser(user);
-      blogService.setToken(user.token);
+      dispatch(setUser(user));
     }
-  }, []);
+  }, [dispatch]);
 
   const handleLoginSubmit = async (evt) => {
     evt.preventDefault();
 
-    try {
-      const user = await loginService.login(username, password);
+    dispatch(login({ username, password }))
+      .unwrap()
+      .then((user) => {
+        setUsername('');
+        setPassword('');
 
-      setUser(user);
-      blogService.setToken(user.token);
-      setUsername('');
-      setPassword('');
+        localStorage.setItem('user', JSON.stringify(user));
 
-      localStorage.setItem('user', JSON.stringify(user));
-
-      showNotification(`User ${user.name} logged in.`);
-    } catch (err) {
-      console.error('Invalid credentials:', err.message);
-      showNotification(`Invalid credentials: ${err.message}`);
-    }
+        showNotification(`User ${user.name} logged in.`);
+      })
+      .catch((err) => {
+        console.error('Invalid credentials:', err.message);
+        showNotification(`Invalid credentials: ${err.message}`);
+      });
   };
 
   const handleLogoutClick = (evt) => {
     showNotification(`User ${user.name} logged out.`);
-    setUser(null);
-    blogService.setToken(null);
+    dispatch(setUser(null));
     localStorage.removeItem('user');
   };
 
