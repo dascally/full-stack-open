@@ -5,6 +5,14 @@ import { set3sNotification } from './reducers/notificationSlice';
 import { login, setUser } from './reducers/userSlice';
 
 import { Link, Outlet } from 'react-router-dom';
+import {
+  Button,
+  CssBaseline,
+  IconButton,
+  InputAdornment,
+  TextField,
+} from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Notification from './components/Notification';
 
 const App = () => {
@@ -13,6 +21,7 @@ const App = () => {
   const user = useSelector((state) => state.user);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const notification = useSelector((state) => state.notification);
   const showNotification = (message) => {
@@ -53,8 +62,13 @@ const App = () => {
     localStorage.removeItem('user');
   };
 
+  const handleShowPasswordClick = (evt) => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <>
+      <CssBaseline />
       <nav
         style={{
           display: 'flex',
@@ -69,9 +83,14 @@ const App = () => {
         {user ? (
           <p style={{ margin: '0' }}>
             {user.name} is logged in.{' '}
-            <button type='button' onClick={handleLogoutClick}>
+            <Button
+              type='button'
+              variant='contained'
+              sx={{ textTransform: 'initial' }}
+              onClick={handleLogoutClick}
+            >
               Logout
-            </button>
+            </Button>
           </p>
         ) : null}
       </nav>
@@ -81,9 +100,8 @@ const App = () => {
           <h2>Log in</h2>
           <form onSubmit={handleLoginSubmit}>
             <div>
-              <label htmlFor='username'>Username</label>
-              <input
-                id='username'
+              <TextField
+                label='Username'
                 type='text'
                 name='username'
                 required
@@ -94,20 +112,38 @@ const App = () => {
               />
             </div>
             <div>
-              <label htmlFor='password'>Password</label>
-              <input
-                id='password'
-                type='password'
+              <TextField
+                label='Password'
+                type={showPassword ? 'text' : 'password'}
                 name='password'
                 required
                 value={password}
                 onChange={(evt) => {
                   setPassword(evt.target.value);
                 }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton
+                        aria-label='Toggle password visibility'
+                        onClick={handleShowPasswordClick}
+                        edge='end'
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
             </div>
             <div>
-              <button type='submit'>Login</button>
+              <Button
+                type='submit'
+                variant='contained'
+                sx={{ textTransform: 'initial' }}
+              >
+                Login
+              </Button>
             </div>
           </form>
         </>

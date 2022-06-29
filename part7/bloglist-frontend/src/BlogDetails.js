@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { addComment } from './reducers/blogSlice';
+import { Link } from '@mui/material';
 
 const BlogDetails = () => {
   const dispatch = useDispatch();
@@ -30,7 +31,7 @@ const BlogDetails = () => {
         <>
           <h2>{`${blogPost.title} by ${blogPost.author}`}</h2>
           <p>
-            <a href={blogPost.url}>{blogPost.url}</a>
+            <Link href={blogPost.url}>{blogPost.url}</Link>
             <br />
             {blogPost.likes} likes
             <br />
