@@ -47,4 +47,26 @@ function calculateExercises(
   };
 }
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+function parseArgsForExercise(args: typeof process.argv) {
+  if (args.length < 4) throw new Error('Too few arguments.');
+
+  const dailyExerciseHours = args.slice(2, -1).map((dailyHours) => +dailyHours);
+  const target = +args[args.length - 1];
+
+  dailyExerciseHours.forEach((dailyHours) => {
+    if (isNaN(dailyHours)) throw new Error('Arguments must be numbers.');
+  });
+  if (isNaN(target)) throw new Error('Arguments must be numbers.');
+
+  return { dailyExerciseHours, target };
+}
+
+try {
+  const { dailyExerciseHours, target } = parseArgsForExercise(process.argv);
+  console.log(calculateExercises(dailyExerciseHours, target));
+} catch (err) {
+  if (err instanceof Error) {
+    console.error(err.message);
+  }
+}
+// console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
