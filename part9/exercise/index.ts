@@ -1,6 +1,7 @@
 import express from 'express';
 import type { NextFunction, Request, Response } from 'express';
 import calculateBmi from './bmiCalculator';
+import calculateExercises from './exerciseCalculator';
 
 const PORT = 3003;
 const app = express();
@@ -27,6 +28,51 @@ app
     const bmiResult = calculateBmi(height, weight);
 
     res.json({ weight, height, bmi: bmiResult.message });
+  })
+  .post('/exercises', express.json(), (req, res) => {
+    interface ExercisesRequestBody {
+      daily_exercises: Array<number>;
+      target: number;
+    }
+
+    /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+    /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    function isExercisesRequestBody(body: any): body is ExercisesRequestBody {
+      if (
+        Object.prototype.hasOwnProperty.call(body, 'daily_exercises') &&
+        Object.prototype.hasOwnProperty.call(body, 'target') &&
+        Array.isArray(body.daily_exercises) &&
+        typeof body.target === 'number'
+      ) {
+        const isDailyExercisesANumberArray: boolean = (
+          body.daily_exercises as Array<any>
+        ).reduce((areNumbers: boolean, dailyHours) => {
+          const isNumber = !isNaN(+dailyHours);
+          return isNumber && areNumbers;
+        }, true);
+
+        return isDailyExercisesANumberArray && !isNaN(body.target as number);
+      } else {
+        return false;
+      }
+    }
+    /* eslint-enable */
+
+    if (!isExercisesRequestBody(req.body)) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (!req.body.daily_exercises || !req.body.target) {
+        throw new Error('Parameters missing.');
+      } else {
+        throw new Error('Malformatted parameters.');
+      }
+    }
+
+    const { daily_exercises, target } = req.body;
+
+    const result = calculateExercises(daily_exercises, target);
+
+    res.json(result);
   })
   .use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
     res.status(400).json({ error: err.message });

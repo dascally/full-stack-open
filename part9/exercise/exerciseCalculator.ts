@@ -8,7 +8,7 @@ interface Result {
   average: number;
 }
 
-function calculateExercises(
+export default function calculateExercises(
   dailyExerciseHours: Array<number>,
   target: number
 ): Result {
@@ -47,6 +47,7 @@ function calculateExercises(
   };
 }
 
+/*
 function parseArgsForExercise(args: typeof process.argv) {
   if (args.length < 4) throw new Error('Too few arguments.');
 
@@ -69,4 +70,5 @@ try {
     console.error(err.message);
   }
 }
+*/
 // console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
