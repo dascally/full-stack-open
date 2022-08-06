@@ -1,4 +1,5 @@
-import express, { type NextFunction } from 'express';
+import express from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import calculateBmi from './bmiCalculator';
 
 const PORT = 3003;
@@ -27,7 +28,7 @@ app
 
     res.json({ weight, height, bmi: bmiResult.message });
   })
-  .use((err: Error, _req: any, res: any, _next: NextFunction) => {
+  .use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
     res.status(400).json({ error: err.message });
   });
 
