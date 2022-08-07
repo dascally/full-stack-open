@@ -4,6 +4,7 @@
     "target": "es2016",
     "module": "commonjs",
     "esModuleInterop": true,
+    "resolveJsonModule": true,
 
     "strict": true,
     "noUnusedLocals": true,
