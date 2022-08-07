@@ -1,5 +1,6 @@
 import express from 'express';
 import diagnosesRouter from './routes/diagnoses.js';
+import patientsRouter from './routes/patients.js';
 
 const PORT = 3001;
 
@@ -10,6 +11,7 @@ app.get('/api/ping', (_req, res) => {
 });
 
 app.use('/api/diagnoses', diagnosesRouter);
+app.use('/api/patients', patientsRouter);
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}.`);

@@ -1,8 +1,4 @@
-export interface Diagnosis {
-  code: string;
-  name: string;
-  latin?: string;
-}
+import { Diagnosis } from '../types.js';
 
 const diagnoses: Array<Diagnosis> = [
   {
