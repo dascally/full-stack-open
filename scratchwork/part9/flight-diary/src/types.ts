@@ -23,3 +23,10 @@ export interface DiaryEntry {
 
 export type NonSensitiveDiaryEntry = Omit<DiaryEntry, 'comment'>;
 export type NewDiaryEntry = Omit<DiaryEntry, 'id'>;
+
+export type Fields = {
+  comment: unknown;
+  date: unknown;
+  weather: unknown;
+  visibility: unknown;
+};

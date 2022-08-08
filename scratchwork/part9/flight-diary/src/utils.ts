@@ -1,4 +1,4 @@
-import { NewDiaryEntry, Visibility, Weather } from './types';
+import { Fields, NewDiaryEntry, Visibility, Weather } from './types';
 
 const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
@@ -47,13 +47,6 @@ const parseVisibility = (visibility: unknown): Visibility => {
     throw new Error('Incorrect or missing visibility: ' + visibility);
   }
   return visibility;
-};
-
-type Fields = {
-  comment: unknown;
-  date: unknown;
-  weather: unknown;
-  visibility: unknown;
 };
 
 const toNewDiaryEntry = ({
