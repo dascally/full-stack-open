@@ -1,4 +1,9 @@
-import type { PatientMinusSensitiveInfo } from '../types.js';
+import { randomUUID } from 'crypto';
+import type {
+  NewPatientData,
+  Patient,
+  PatientMinusSensitiveInfo,
+} from '../types.js';
 import patients from '../data/patients.js';
 
 export function getPatients(): Array<PatientMinusSensitiveInfo> {
@@ -9,4 +14,19 @@ export function getPatients(): Array<PatientMinusSensitiveInfo> {
     gender,
     occupation,
   }));
+}
+
+export function addPatient(patientData: NewPatientData): Patient {
+  const { name, dateOfBirth, ssn, gender, occupation } = patientData;
+  const newPatient: Patient = {
+    name,
+    dateOfBirth,
+    ssn,
+    gender,
+    occupation,
+    id: randomUUID(),
+  };
+
+  patients.push(newPatient);
+  return newPatient;
 }
