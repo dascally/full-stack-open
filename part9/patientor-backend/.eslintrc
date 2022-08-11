@@ -25,6 +25,7 @@
       "error",
       { "argsIgnorePattern": "^_" }
     ],
-    "no-case-declarations": "off"
+    "no-case-declarations": "off",
+    "curly": ["error", "multi-line"]
   }
 }

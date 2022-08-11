@@ -1,4 +1,4 @@
-import { Gender, NewPatientData } from './types.js';
+import { Entry, Gender, NewPatientData } from './types.js';
 
 function isGender(gender: unknown): gender is Gender {
   return Object.values(Gender as object).includes(gender);
@@ -29,12 +29,17 @@ export function validatePatientData(patientData: any): NewPatientData {
     throw new Error('Provided patient occupation is invalid.');
   }
 
+  // TODO: Validate entries properly
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const entries: Entry[] = patientData.entries ?? [];
+
   const newPatient: NewPatientData = {
     name,
     dateOfBirth,
     ssn,
     gender,
     occupation,
+    entries,
   };
 
   return newPatient;
