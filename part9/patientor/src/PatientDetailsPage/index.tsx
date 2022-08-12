@@ -35,6 +35,24 @@ const PatientDetailsPage = () => {
           <p>Gender: {patient.gender}</p>
           <p>SSN: {patient.ssn}</p>
           <p>Occupation: {patient.occupation}</p>
+
+          <h4>Entries</h4>
+          {patient.entries?.map((entry) => (
+            <div key={entry.id} style={{ margin: '0 0 1rem' }}>
+              <p style={{ margin: '0' }}>
+                {entry.date}: {entry.description}
+              </p>
+              {entry.diagnosisCodes ? (
+                <ul style={{ margin: '0' }}>
+                  {entry.diagnosisCodes.map((code) => (
+                    <li key={code}>{code}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p style={{ margin: '0' }}>No diagnosis codes.</p>
+              )}
+            </div>
+          ))}
         </>
       )}
     </article>
