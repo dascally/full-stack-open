@@ -7,7 +7,7 @@ import { Patient } from '../types';
 
 const PatientDetailsPage = () => {
   const { patientId } = useParams() as { patientId: string };
-  const [{ patients }, dispatch] = useStateValue();
+  const [{ patients, diagnosisCodes }, dispatch] = useStateValue();
   const patient = patients[patientId];
 
   useEffect(() => {
@@ -45,7 +45,9 @@ const PatientDetailsPage = () => {
               {entry.diagnosisCodes ? (
                 <ul style={{ margin: '0' }}>
                   {entry.diagnosisCodes.map((code) => (
-                    <li key={code}>{code}</li>
+                    <li key={code}>
+                      {code}: {diagnosisCodes[code].name}
+                    </li>
                   ))}
                 </ul>
               ) : (

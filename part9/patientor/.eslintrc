@@ -23,6 +23,23 @@
     "no-case-declarations": 0,
     "react/prop-types": 0,
     "react/react-in-jsx-scope": 0
+    // "@typescript-eslint/member-delimiter-style": [
+    //   "error",
+    //   {
+    //     "overrides": {
+    //       "typeLiteral": {
+    //         "multiline": {
+    //           "delimiter": "comma",
+    //           "requireLast": true
+    //         },
+    //         "singleline": {
+    //           "delimiter": "comma",
+    //           "requireLast": false
+    //         }
+    //       }
+    //     }
+    //   }
+    // ]
   },
   "settings": {
     "react": {
