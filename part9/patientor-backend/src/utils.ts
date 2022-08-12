@@ -8,6 +8,20 @@ function isDateOfBirth(dateOfBirth: string): boolean {
   return /^\d{4}([-/])\d{2}\1\d{2}$/.test(dateOfBirth);
 }
 
+function isObject(object: unknown): object is Record<string | symbol, unknown> {
+  return typeof object === 'object' && object !== null;
+}
+
+function isEntry(entry: unknown): entry is Entry {
+  return (
+    isObject(entry) &&
+    typeof entry.type === 'string' &&
+    (entry.type === 'Hospital' ||
+      entry.type === 'OccupationalHealthcare' ||
+      entry.type === 'HealthCheck')
+  );
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function validatePatientData(patientData: any): NewPatientData {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -29,9 +43,19 @@ export function validatePatientData(patientData: any): NewPatientData {
     throw new Error('Provided patient occupation is invalid.');
   }
 
-  // TODO: Validate entries properly
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const entries: Entry[] = patientData.entries ?? [];
+  const unvalidatedEntries = patientData.entries as unknown;
+  let entries: Entry[];
+  if (
+    Array.isArray(unvalidatedEntries) &&
+    unvalidatedEntries.reduce(
+      (areEntries: boolean, entry) => areEntries && isEntry(entry),
+      true
+    )
+  ) {
+    entries = unvalidatedEntries as Entry[];
+  } else {
+    entries = [];
+  }
 
   const newPatient: NewPatientData = {
     name,
