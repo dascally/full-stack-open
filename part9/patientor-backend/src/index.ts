@@ -18,8 +18,19 @@ app.use('/api/patients', patientsRouter);
 
 app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
   if (err instanceof Error) {
-    console.error(err.stack);
-    res.status((err as Error).status || 500).send(err.message);
+    // console.error(err.stack);
+
+    let message = '';
+    if (err instanceof AggregateError) {
+      message = err.errors.reduce(
+        (fullMessage: string, err) => fullMessage + '\n' + err.message,
+        'Aggregate error:'
+      );
+    } else {
+      message = err.message;
+    }
+
+    res.status((err as Error).status || 500).send(message);
   }
 });
 
