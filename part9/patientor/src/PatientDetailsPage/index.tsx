@@ -2,8 +2,9 @@ import axios from 'axios';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { apiBaseUrl } from '../constants';
-import { updatePatient, useStateValue } from '../state';
-import { Entry, HealthCheckRating, Patient } from '../types';
+import { addPatientEntry, updatePatient, useStateValue } from '../state';
+import { Entry, EntryFormData, HealthCheckRating, Patient } from '../types';
+import AddEntryForm from './AddEntryForm';
 
 const AdditionalEntryDetails = ({ entry }: { entry: Entry }) => {
   switch (entry.type) {
@@ -59,6 +60,59 @@ const PatientDetailsPage = () => {
       });
   }, [dispatch]);
 
+  const onSubmit = (values: EntryFormData) => {
+    const {
+      type,
+      description,
+      date,
+      specialist,
+      diagnosisCodes,
+      healthCheckRating,
+      discharge,
+      employerName,
+      sickLeave,
+    } = values;
+
+    const submissionData: EntryFormData = {
+      type,
+      description,
+      date,
+      specialist,
+      diagnosisCodes,
+    };
+
+    switch (type) {
+      case 'HealthCheck':
+        submissionData.healthCheckRating = Number(healthCheckRating);
+        break;
+      case 'Hospital':
+        submissionData.discharge = discharge;
+        break;
+      case 'OccupationalHealthcare':
+        submissionData.employerName = employerName;
+        submissionData.sickLeave = sickLeave;
+        break;
+    }
+
+    axios
+      .post<EntryFormData>(
+        `${apiBaseUrl}/patients/${patientId}/entries`,
+        submissionData
+      )
+      .then(({ data: newEntry }) => {
+        dispatch(addPatientEntry(patientId, newEntry as Entry));
+      })
+      .catch((err: unknown) => {
+        if (axios.isAxiosError(err)) {
+          console.error(err?.response?.data || 'Unrecognized axios error');
+          //   setError(String(e?.response?.data?.error) || 'Unrecognized axios error');
+        } else {
+          console.error('Unknown error', err);
+          //   setError('Unknown error');
+        }
+      });
+  };
+
   return (
     <article>
       {!patient ? (
@@ -79,11 +133,11 @@ const PatientDetailsPage = () => {
                 </p>
                 <AdditionalEntryDetails entry={entry} />
                 <p style={{ margin: '0' }}>Diagnosed by {entry.specialist}.</p>
-                {entry.diagnosisCodes ? (
+                {entry.diagnosisCodes && entry.diagnosisCodes.length > 0 ? (
                   <ul style={{ margin: '0' }}>
                     {entry.diagnosisCodes.map((code) => (
                       <li key={code}>
-                        {code}: {diagnosisCodes[code].name}
+                        {code}: {diagnosisCodes[code]?.name}
                       </li>
                     ))}
                   </ul>
@@ -95,6 +149,9 @@ const PatientDetailsPage = () => {
           ) : (
             <p>No entries recorded.</p>
           )}
+
+          <h5>Add an entry</h5>
+          <AddEntryForm onSubmit={onSubmit} />
         </>
       )}
     </article>

@@ -56,6 +56,7 @@ export function addPatientsEntry(
 
   const newEntry: PartialEntry = {
     id: randomUUID(),
+    type: entryData.type,
     description: entryData.description,
     date: entryData.date,
     specialist: entryData.specialist,

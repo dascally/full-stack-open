@@ -1,5 +1,5 @@
 import { State } from './state';
-import { Diagnosis, Patient } from '../types';
+import { Diagnosis, Entry, Patient } from '../types';
 
 export type Action =
   | {
@@ -17,6 +17,13 @@ export type Action =
   | {
       type: 'SET_DIAGNOSIS_CODES';
       payload: Diagnosis[];
+    }
+  | {
+      type: 'ADD_PATIENT_ENTRY';
+      payload: {
+        patientId: string;
+        entry: Entry;
+      };
     };
 
 export const setPatientList = (patients: Patient[]): Action => {
@@ -44,6 +51,16 @@ export const setDiagnosisCodes = (diagnosisCodes: Diagnosis[]): Action => {
   return {
     type: 'SET_DIAGNOSIS_CODES',
     payload: diagnosisCodes,
+  };
+};
+
+export const addPatientEntry = (patientId: string, entry: Entry): Action => {
+  return {
+    type: 'ADD_PATIENT_ENTRY',
+    payload: {
+      patientId,
+      entry,
+    },
   };
 };
 
@@ -76,6 +93,23 @@ export const reducer = (state: State, action: Action): State => {
           [action.payload.id]: {
             ...state.patients[action.payload.id],
             ...action.payload,
+          },
+        },
+      };
+    case 'ADD_PATIENT_ENTRY':
+      return {
+        ...state,
+        patients: {
+          ...state.patients,
+          [action.payload.patientId]: {
+            ...state.patients[action.payload.patientId],
+            entries: !state.patients[action.payload.patientId].entries
+              ? [action.payload.entry]
+              : [
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  ...state.patients[action.payload.patientId].entries!,
+                  action.payload.entry,
+                ],
           },
         },
       };
