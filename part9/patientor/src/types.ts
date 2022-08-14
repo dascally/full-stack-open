@@ -56,8 +56,10 @@ export type EntryFormData = Omit<
   Partial<HospitalEntry> &
     Partial<OccupationalHealthcareEntry> &
     Partial<HealthCheckEntry>,
-  'type'
-> & { type?: Entry['type'] | '' };
+  'type' | 'healthCheckRating'
+> & { type?: Entry['type'] | '' } & {
+  healthCheckRating?: HealthCheckRating | '';
+};
 
 export interface Patient {
   id: string;

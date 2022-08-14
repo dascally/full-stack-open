@@ -1,16 +1,113 @@
 import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { useStateValue } from '../state';
 // import { DiagnosisSelection } from '../AddPatientModal/FormField';
-// import { useStateValue } from '../state';
-import { EntryFormData } from '../types';
+import { Diagnosis, EntryFormData, HealthCheckRating } from '../types';
 
-// function validate(values: EntryFormData) {}
+function validate(
+  values: EntryFormData,
+  diagnosisList: { [code: string]: Diagnosis }
+) {
+  function isStringDate(dateOfBirth: string): boolean {
+    return /^\d{4}([-/])\d{2}\1\d{2}$/.test(dateOfBirth);
+  }
+
+  const diagnosisCodesList = Object.values(diagnosisList).map(
+    (diagnosis) => diagnosis.code
+  );
+
+  const {
+    type,
+    description,
+    date,
+    specialist,
+    diagnosisCodes,
+    healthCheckRating,
+    discharge,
+    employerName,
+    sickLeave,
+  } = values;
+
+  const errors: {
+    type?: string;
+    description?: string;
+    date?: string;
+    specialist?: string;
+    diagnosisCodes?: string;
+    healthCheckRating?: string;
+    discharge?: { date?: string; criteria?: string };
+    employerName?: string;
+    sickLeave?: { startDate?: string; endDate?: string };
+  } = {};
+  const INVALID_DATE_DESC =
+    'Date must be given in the format YYYY-MM-DD or YYYY/MM/DD.';
+
+  if (
+    !(
+      type === 'HealthCheck' ||
+      type === 'Hospital' ||
+      type === 'OccupationalHealthcare'
+    )
+  ) {
+    errors.type = 'Invalid entry type.';
+  }
+
+  if (!description) errors.description = 'Required field.';
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  if (!isStringDate(date!)) errors.date = INVALID_DATE_DESC;
+  if (!specialist) errors.specialist = 'Required field.';
+  if (
+    diagnosisCodes &&
+    diagnosisCodes.length > 0 &&
+    diagnosisCodes.some((code) => !diagnosisCodesList.includes(code))
+  ) {
+    errors.diagnosisCodes = 'An invalid diagnosis code was given.';
+  }
+
+  switch (type) {
+    case 'HealthCheck':
+      if (
+        healthCheckRating === '' ||
+        !Object.values(HealthCheckRating).includes(Number(healthCheckRating))
+      ) {
+        errors.healthCheckRating = 'Invalid value.';
+      }
+      break;
+    case 'Hospital':
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      if (!isStringDate(discharge!.date)) {
+        if (!errors.discharge) errors.discharge = {};
+        errors.discharge.date = INVALID_DATE_DESC;
+      }
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      if (!discharge!.criteria) {
+        if (!errors.discharge) errors.discharge = {};
+        errors.discharge.criteria = 'Required field.';
+      }
+      break;
+    case 'OccupationalHealthcare':
+      if (!employerName) errors.employerName = 'Required field.';
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      if (!isStringDate(sickLeave!.startDate)) {
+        if (!errors.sickLeave) errors.sickLeave = {};
+        errors.sickLeave.startDate = INVALID_DATE_DESC;
+      }
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      if (!isStringDate(sickLeave!.endDate)) {
+        if (!errors.sickLeave) errors.sickLeave = {};
+        errors.sickLeave.endDate = INVALID_DATE_DESC;
+      }
+      break;
+  }
+
+  return errors;
+}
 
 const AddEntryForm = ({
   onSubmit,
 }: {
   onSubmit: (values: EntryFormData) => void;
 }) => {
-  //   const [{ diagnosisCodes }] = useStateValue();
+  const [{ diagnosisCodes }] = useStateValue();
 
   return (
     <Formik
@@ -31,6 +128,7 @@ const AddEntryForm = ({
           endDate: '',
         },
       }}
+      validate={(values) => validate(values, diagnosisCodes)}
       onSubmit={onSubmit}
     >
       {({ values }) => (
