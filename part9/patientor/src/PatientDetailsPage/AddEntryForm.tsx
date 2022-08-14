@@ -1,6 +1,5 @@
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useStateValue } from '../state';
-// import { DiagnosisSelection } from '../AddPatientModal/FormField';
 import { Diagnosis, EntryFormData, HealthCheckRating } from '../types';
 
 function validate(
@@ -135,7 +134,7 @@ const AddEntryForm = ({
         <Form className='form ui'>
           <div>
             <label htmlFor='type'>Type</label>
-            <Field name='type' as='select'>
+            <Field name='type' id='type' as='select'>
               <option value=''>Select an entry type</option>
               <option value='HealthCheck'>Health Check</option>
               <option value='Hospital'>Hospital</option>
@@ -147,25 +146,24 @@ const AddEntryForm = ({
           </div>
           <div>
             <label htmlFor='description'>Description</label>
-            <Field name='description' placeholder='Description' />
+            <Field
+              name='description'
+              id='description'
+              placeholder='Description'
+            />
             <ErrorMessage name='description' />
           </div>
           <div>
             <label htmlFor='date'>Date</label>
-            <Field name='date' placeholder='YYYY-MM-DD' />
+            <Field name='date' id='date' placeholder='YYYY-MM-DD' />
             <ErrorMessage name='date' />
           </div>
           <div>
             <label htmlFor='specialist'>Specialist</label>
-            <Field name='specialist' placeholder='Specialist' />
+            <Field name='specialist' id='specialist' placeholder='Specialist' />
             <ErrorMessage name='specialist' />
           </div>
           <div>
-            {/* <DiagnosisSelection
-              setFieldValue={setFieldValue}
-              setFieldTouched={setFieldTouched}
-              diagnoses={Object.values(diagnosisCodes)}
-            /> */}
             <p id='diagnosisCodesLabel' style={{ margin: 0 }}>
               Diagnosis codes
             </p>
@@ -236,7 +234,11 @@ const AddEntryForm = ({
             <legend>Health check entry details</legend>
             <div>
               <label htmlFor='healthCheckRating'>Health check rating</label>
-              <Field name='healthCheckRating' as='select'>
+              <Field
+                name='healthCheckRating'
+                id='healthCheckRating'
+                as='select'
+              >
                 <option value=''>Select a rating</option>
                 <option value='0'>Healthy</option>
                 <option value='1'>Low risk</option>
@@ -250,13 +252,18 @@ const AddEntryForm = ({
             <legend>Hospital entry details</legend>
             <div>
               <label htmlFor='discharge.date'>Discharge date</label>
-              <Field name='discharge.date' placeholder='YYYY-MM-DD' />
+              <Field
+                name='discharge.date'
+                id='discharge.date'
+                placeholder='YYYY-MM-DD'
+              />
               <ErrorMessage name='discharge.date' />
             </div>
             <div>
               <label htmlFor='discharge.criteria'>Discharge criteria</label>
               <Field
                 name='discharge.criteria'
+                id='discharge.criteria'
                 placeholder='Discharge criteria'
               />
               <ErrorMessage name='discharge.criteria' />
@@ -266,17 +273,29 @@ const AddEntryForm = ({
             <legend>Occupational healthcare entry details</legend>
             <div>
               <label htmlFor='employerName'>Employer name</label>
-              <Field name='employerName' placeholder='Employer name' />
+              <Field
+                name='employerName'
+                id='employerName'
+                placeholder='Employer name'
+              />
               <ErrorMessage name='employerName' />
             </div>
             <div>
               <label htmlFor='sickLeave.startDate'>Sick leave start date</label>
-              <Field name='sickLeave.startDate' placeholder='YYYY-MM-DD' />
+              <Field
+                name='sickLeave.startDate'
+                id='sickLeave.startDate'
+                placeholder='YYYY-MM-DD'
+              />
               <ErrorMessage name='sickLeave.startDate' />
             </div>
             <div>
               <label htmlFor='sickLeave.endDate'>Sick leave end date</label>
-              <Field name='sickLeave.endDate' placeholder='YYYY-MM-DD' />
+              <Field
+                name='sickLeave.endDate'
+                id='sickLeave.endDate'
+                placeholder='YYYY-MM-DD'
+              />
               <ErrorMessage name='sickLeave.endDate' />
             </div>
           </fieldset>
