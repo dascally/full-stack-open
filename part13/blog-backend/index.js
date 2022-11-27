@@ -1,16 +1,17 @@
 require('dotenv').config();
-const { Sequelize } = require('sequelize');
+const { Sequelize, QueryTypes } = require('sequelize');
 
 const sequelize = new Sequelize(process.env.DB_URL);
 
 sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Successfully connected to DB.');
+  .query('SELECT * FROM blogs', { type: QueryTypes.SELECT })
+  .then((blogs) => {
+    for ({ author, title, likes } of blogs) {
+      console.log(
+        `${author}: '${title}', ${likes} like${likes === 1 ? '' : 's'}`
+      );
+    }
   })
   .catch((err) => {
     console.log('Error connecting to DB:', err);
-  })
-  .finally(() => {
-    sequelize.close();
   });
