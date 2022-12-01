@@ -13,6 +13,10 @@ app.use('/api/blogs', blogsRouter);
 app.use('/api/users', usersRouter);
 app.use((err, req, res, next) => {
   console.error('ERROR:', err.message);
+  if (err.name === 'SequelizeValidationError') {
+    err.errors = err.errors.map((error) => error.message);
+    res.status(400).json(err);
+  }
   next(err);
 });
 
