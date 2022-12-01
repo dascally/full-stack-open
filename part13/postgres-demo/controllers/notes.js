@@ -22,7 +22,7 @@ router.post('/', async (req, res) => {
 });
 
 router.get('/:id', noteFinder, async (req, res) => {
-  if (note) {
+  if (req.note) {
     res.json(note);
   } else {
     res.status(404).end();
@@ -30,7 +30,7 @@ router.get('/:id', noteFinder, async (req, res) => {
 });
 
 router.delete('/:id', noteFinder, async (req, res) => {
-  if (note) {
+  if (req.note) {
     await note.destroy();
   }
 
@@ -38,7 +38,7 @@ router.delete('/:id', noteFinder, async (req, res) => {
 });
 
 router.put('/:id', noteFinder, async (req, res) => {
-  if (note) {
+  if (req.note) {
     note.important = req.body.important;
     await note.save();
     res.json(note);
