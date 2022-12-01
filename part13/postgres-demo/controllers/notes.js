@@ -22,26 +22,26 @@ router.post('/', async (req, res) => {
 });
 
 router.get('/:id', noteFinder, async (req, res) => {
-  if (note) {
-    res.json(note);
+  if (req.note) {
+    res.json(req.note);
   } else {
     res.status(404).end();
   }
 });
 
 router.delete('/:id', noteFinder, async (req, res) => {
-  if (note) {
-    await note.destroy();
+  if (req.note) {
+    await req.note.destroy();
   }
 
   res.status(204).end();
 });
 
 router.put('/:id', noteFinder, async (req, res) => {
-  if (note) {
-    note.important = req.body.important;
-    await note.save();
-    res.json(note);
+  if (req.note) {
+    req.note.important = req.body.important;
+    await req.note.save();
+    res.json(req.note);
   } else {
     res.status(404).end();
   }
