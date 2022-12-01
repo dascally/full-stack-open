@@ -6,9 +6,11 @@ const { connectToDatabase } = require('./util/db');
 const app = express();
 
 const blogsRouter = require('./controllers/blogs');
+const usersRouter = require('./controllers/users');
 
 app.use(express.json());
 app.use('/api/blogs', blogsRouter);
+app.use('/api/users', usersRouter);
 app.use((err, req, res, next) => {
   console.error('ERROR:', err.message);
   next(err);
