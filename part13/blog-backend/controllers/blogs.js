@@ -59,12 +59,14 @@ router.put('/:id', blogFinder, async (req, res, next) => {
   }
 });
 
-router.delete('/:id', blogFinder, async (req, res) => {
+router.delete('/:id', blogFinder, tokenExtractor, async (req, res) => {
   try {
-    if (req.blog) {
-      req.blog.destroy();
+    if (!req.blog) return res.status(404).end();
+    if (!(req.blog.userId === req.decodedToken.id)) {
+      return res.status(401).json({ error: 'Not authorized.' });
     }
-    res.status(204).end();
+    req.blog.destroy();
+    return res.status(204).end();
   } catch (err) {
     res.status(400).json({ error: err });
   }
