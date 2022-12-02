@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const { Note } = require('../models');
+const { Note, User } = require('../models');
 const { tokenExtractor } = require('../util/middleware');
 
 const noteFinder = async (req, res, next) => {
