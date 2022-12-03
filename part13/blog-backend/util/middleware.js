@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const SECRET = require('./config');
+const { SECRET } = require('./config');
 
 const tokenExtractor = async (req, res, next) => {
   const authorizationHeader = req.get('Authorization');
