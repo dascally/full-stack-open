@@ -11,10 +11,20 @@ ReadingList.init(
       primaryKey: true,
       autoIncrement: true,
     },
-    name: {
-      type: DataTypes.TEXT,
+    userId: {
+      type: DataTypes.INTEGER,
       allowNull: false,
-      unique: true,
+      references: { model: 'user', key: 'id' },
+    },
+    blogId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: 'blog', key: 'id' },
+    },
+    read: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
   },
   {
@@ -22,6 +32,7 @@ ReadingList.init(
     underscored: true,
     timestamps: false,
     modelName: 'reading_list',
+    freezeTableName: true,
   }
 );
 
